@@ -1,0 +1,6 @@
+# Typescript bBuild Directory
+.build
+
+# Node Package Directory
+node_modules
+package-lock.json
