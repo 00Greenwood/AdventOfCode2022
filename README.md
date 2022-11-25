@@ -4,4 +4,4 @@
 `npm install`
 
 ## Solve
-`npm run solve`
+`npm run solve [--day 0]`
