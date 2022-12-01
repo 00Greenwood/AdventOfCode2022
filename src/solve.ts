@@ -1,6 +1,7 @@
 import { ArgumentParser } from "argparse";
 import { Day } from "./Day";
 import { Day0 } from "./Day0";
+import { Day1 } from "./Day1";
 
 const parser = new ArgumentParser({
   description: "Solver for Advent of Code 2022!",
@@ -13,12 +14,14 @@ parser.add_argument("--day", {
 // Construct an array of every day.
 const days = new Array<Day>();
 days.push(new Day0());
+days.push(new Day1());
 
 const args = parser.parse_args();
 
 switch (args.day) {
+  case 1:
   case 0:
-    days[0].solve();
+    days[args.day].solve();
     break;
   default:
     // By default, solve every day.
