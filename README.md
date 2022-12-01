@@ -6,10 +6,4 @@
 
 ## Solve
 
-<<<<<<< Updated upstream
 `npm run solve [--day 0]`
-=======
-
-`npm run solve`
-
-> > > > > > > Stashed changes
