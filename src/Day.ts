@@ -13,11 +13,11 @@ export abstract class Day {
   public async solve(): Promise<void> {
     const input = await this.load();
     {
-      const output = await this.solveOne(input);
+      const output = await this.solvePartOne(input);
       console.log(`${this.name}: Part 1: ${output}`);
     }
     {
-      const output = await this.solveTwo(input);
+      const output = await this.solvePartTwo(input);
       console.log(`${this.name}: Part 2: ${output}`);
     }
   }
@@ -29,6 +29,6 @@ export abstract class Day {
     );
   }
 
-  abstract solveOne(input: string): Promise<string>;
-  abstract solveTwo(input: string): Promise<string>;
+  abstract solvePartOne(input: string): Promise<string>;
+  abstract solvePartTwo(input: string): Promise<string>;
 }

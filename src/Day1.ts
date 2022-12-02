@@ -12,13 +12,13 @@ export class Day1 extends Day {
     );
   }
 
-  public async solveOne(input: string): Promise<string> {
+  public async solvePartOne(input: string): Promise<string> {
     const totalCalories = this.countCalories(input);
     const maximum = Math.max(...totalCalories);
     return maximum.toString();
   }
 
-  public async solveTwo(input: string): Promise<string> {
+  public async solvePartTwo(input: string): Promise<string> {
     const totalCalories = this.countCalories(input);
     let topThree = 0;
     for (let i = 0; i < 3; i++) {
