@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import path = require("path");
 
 export abstract class Day {
@@ -10,23 +10,29 @@ export abstract class Day {
     this.name = name;
   }
 
-  public async solve(): Promise<void> {
-    const input = await this.load();
-    {
-      const output = await this.solvePartOne(input);
-      console.log(`${this.name}: Part 1: ${output}`);
-    }
-    {
-      const output = await this.solvePartTwo(input);
-      console.log(`${this.name}: Part 2: ${output}`);
-    }
-  }
-
   private async load(): Promise<string> {
     return readFile(
       path.resolve(__dirname, "../../input", `${this.id}.txt`),
       "utf-8"
     );
+  }
+
+  public async solve(): Promise<void> {
+    const input = await this.load();
+    {
+      const start = Date.now();
+      const output = await this.solvePartOne(input);
+      const finish = Date.now();
+      const difference = finish - start;
+      console.log(`${this.name}-1: ${output} (${difference} ms)`);
+    }
+    {
+      const start = Date.now();
+      const output = await this.solvePartTwo(input);
+      const finish = Date.now();
+      const difference = finish - start;
+      console.log(`${this.name}-2: ${output} (${difference} ms)`);
+    }
   }
 
   abstract solvePartOne(input: string): Promise<string>;
