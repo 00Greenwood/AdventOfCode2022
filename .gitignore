@@ -1,4 +1,7 @@
-# Typescript bBuild Directory
+# VSCode Settings File
+.vscode
+
+# Typescript Build Directory
 .build
 
 # Node Package Directory

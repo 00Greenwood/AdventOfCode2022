@@ -1,40 +1,32 @@
-import { readFile } from "fs/promises";
+import { readFileSync } from "fs";
 import path = require("path");
 
-export abstract class Day {
-  readonly id: string;
-  readonly name: string;
+export type Input = string;
+export type Output = Promise<string | number>;
 
-  constructor(id: string, name: string) {
-    this.id = id;
+export abstract class Day {
+  readonly name: string;
+  readonly input: string;
+  readonly testInput: string;
+
+  constructor(name: string) {
     this.name = name;
+    this.input = this.load(false /*= isTest*/);
+    this.testInput = this.load(true) /*= isTest*/;
   }
 
-  private async load(): Promise<string> {
-    return readFile(
-      path.resolve(__dirname, "../../input", `${this.id}.txt`),
+  // Load either the input or the test input.
+  private load(isTest: boolean): string {
+    return readFileSync(
+      path.resolve(
+        __dirname,
+        "../inputs",
+        `${this.name}${isTest ? ".test" : ""}.txt`
+      ),
       "utf-8"
     );
   }
 
-  public async solve(): Promise<void> {
-    const input = await this.load();
-    {
-      const start = Date.now();
-      const output = await this.solvePartOne(input);
-      const finish = Date.now();
-      const difference = finish - start;
-      console.log(`${this.name}-1: ${output} (${difference} ms)`);
-    }
-    {
-      const start = Date.now();
-      const output = await this.solvePartTwo(input);
-      const finish = Date.now();
-      const difference = finish - start;
-      console.log(`${this.name}-2: ${output} (${difference} ms)`);
-    }
-  }
-
-  abstract solvePartOne(input: string): Promise<string>;
-  abstract solvePartTwo(input: string): Promise<string>;
+  abstract solvePartOne(input: Input): Output;
+  abstract solvePartTwo(input: Input): Output;
 }

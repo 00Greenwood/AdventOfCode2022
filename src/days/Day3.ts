@@ -1,4 +1,4 @@
-import { Day } from "./Day";
+import { Day, Input, Output } from "../Day";
 
 interface Rucksack {
   first: number[];
@@ -8,7 +8,7 @@ interface Rucksack {
 
 export class Day3 extends Day {
   constructor() {
-    super("Day3", "Day 3");
+    super("Day3");
   }
 
   private convertFromUnicode(input: number): number {
@@ -36,16 +36,16 @@ export class Day3 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Promise<string> {
-    const rucksacks = this.parseInput(input);
+  public async solvePartOne(input: Input): Output {
+    const rucksacks = this.parseInput(await input);
     const result = rucksacks.map(({ first, second }) => {
       return first.filter((value) => second.includes(value))[0];
     });
-    return result.reduce((score, value) => score + value, 0).toString();
+    return result.reduce((score, value) => score + value, 0);
   }
 
-  public async solvePartTwo(input: string): Promise<string> {
-    const rucksacks = this.parseInput(input);
+  public async solvePartTwo(input: Input): Output {
+    const rucksacks = this.parseInput(await input);
     const result = new Array<number>();
     for (let index = 0; index < rucksacks.length; index += 3) {
       const first = rucksacks[index].total;
@@ -55,6 +55,6 @@ export class Day3 extends Day {
       const badge = common.filter((value) => third.includes(value));
       result.push(badge[0]);
     }
-    return result.reduce((score, value) => score + value, 0).toString();
+    return result.reduce((score, value) => score + value, 0);
   }
 }

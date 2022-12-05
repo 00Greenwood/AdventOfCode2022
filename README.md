@@ -6,4 +6,13 @@
 
 ## Solve
 
-`npm run solve [--day 0]`
+To solve every day, run:
+`npm run test`
+
+To solve a specific day, run:
+`npm run test "DayX"`
+
+## Generate Template
+
+To generate the template for a day, run:
+`npm run generate -- --day X`

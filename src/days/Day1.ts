@@ -1,8 +1,8 @@
-import { Day } from "./Day";
+import { Day, Input, Output } from "../Day";
 
 export class Day1 extends Day {
   constructor() {
-    super("Day1", "Day 1");
+    super("Day1");
   }
 
   private countCalories(input: string): number[] {
@@ -12,14 +12,14 @@ export class Day1 extends Day {
     );
   }
 
-  public async solvePartOne(input: string): Promise<string> {
-    const totalCalories = this.countCalories(input);
+  public async solvePartOne(input: Input): Output {
+    const totalCalories = this.countCalories(await input);
     const maximum = Math.max(...totalCalories);
-    return maximum.toString();
+    return maximum;
   }
 
-  public async solvePartTwo(input: string): Promise<string> {
-    const totalCalories = this.countCalories(input);
+  public async solvePartTwo(input: Input): Output {
+    const totalCalories = this.countCalories(await input);
     let topThree = 0;
     for (let i = 0; i < 3; i++) {
       const maximum = Math.max(...totalCalories);
@@ -27,6 +27,6 @@ export class Day1 extends Day {
       const index = totalCalories.indexOf(maximum);
       totalCalories.splice(index, 1);
     }
-    return topThree.toString();
+    return topThree;
   }
 }

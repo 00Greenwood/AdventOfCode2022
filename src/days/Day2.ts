@@ -1,4 +1,4 @@
-import { Day } from "./Day";
+import { Day, Input, Output } from "../Day";
 
 enum Results {
   Lose = 0,
@@ -140,7 +140,7 @@ class Game {
 
 export class Day2 extends Day {
   constructor() {
-    super("Day2", "Day 2");
+    super("Day2");
   }
 
   private parseInput(input: string, isPart1: boolean): Game[] {
@@ -151,21 +151,21 @@ export class Day2 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Promise<string> {
-    const games = this.parseInput(input, true);
+  public async solvePartOne(input: Input): Output {
+    const games = this.parseInput(await input, true);
     const score = games.reduce(
       (score, game) => score + game.response + game.result,
       0
     );
-    return score.toString();
+    return score;
   }
 
-  public async solvePartTwo(input: string): Promise<string> {
-    const games = this.parseInput(input, false);
+  public async solvePartTwo(input: Input): Output {
+    const games = this.parseInput(await input, false);
     const score = games.reduce(
       (score, game) => score + game.response + game.result,
       0
     );
-    return score.toString();
+    return score;
   }
 }
