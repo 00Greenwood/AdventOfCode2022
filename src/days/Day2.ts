@@ -1,4 +1,4 @@
-import { Day, Input, Output } from "../Day";
+import { Day, Output } from "../Day";
 
 enum Results {
   Lose = 0,
@@ -151,8 +151,8 @@ export class Day2 extends Day {
     });
   }
 
-  public async solvePartOne(input: Input): Output {
-    const games = this.parseInput(await input, true);
+  public async solvePartOne(input: string): Output {
+    const games = this.parseInput(input, true);
     const score = games.reduce(
       (score, game) => score + game.response + game.result,
       0
@@ -160,8 +160,8 @@ export class Day2 extends Day {
     return score;
   }
 
-  public async solvePartTwo(input: Input): Output {
-    const games = this.parseInput(await input, false);
+  public async solvePartTwo(input: string): Output {
+    const games = this.parseInput(input, false);
     const score = games.reduce(
       (score, game) => score + game.response + game.result,
       0

@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 import path = require("path");
 
-export type Input = string;
 export type Output = Promise<string | number>;
 
 export abstract class Day {
@@ -27,6 +26,6 @@ export abstract class Day {
     );
   }
 
-  abstract solvePartOne(input: Input): Output;
-  abstract solvePartTwo(input: Input): Output;
+  abstract solvePartOne(input: string): Output;
+  abstract solvePartTwo(input: string): Output;
 }

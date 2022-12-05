@@ -1,4 +1,4 @@
-import { Day, Input, Output } from "../Day";
+import { Day, Output } from "../Day";
 
 interface Area {
   lower: number;
@@ -31,8 +31,8 @@ export class Day4 extends Day {
     });
   }
 
-  public async solvePartOne(input: Input): Output {
-    const pairs = this.parseInput(await input);
+  public async solvePartOne(input: string): Output {
+    const pairs = this.parseInput(input);
     const overlapping = pairs.filter(
       ({ first, second }) =>
         (first.lower >= second.lower && first.upper <= second.upper) ||
@@ -41,8 +41,8 @@ export class Day4 extends Day {
     return overlapping.length;
   }
 
-  public async solvePartTwo(input: Input): Output {
-    const pairs = this.parseInput(await input);
+  public async solvePartTwo(input: string): Output {
+    const pairs = this.parseInput(input);
     const seperate = pairs.filter(
       ({ first, second }) =>
         first.lower > second.upper || second.lower > first.upper

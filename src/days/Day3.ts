@@ -1,4 +1,4 @@
-import { Day, Input, Output } from "../Day";
+import { Day, Output } from "../Day";
 
 interface Rucksack {
   first: number[];
@@ -36,16 +36,16 @@ export class Day3 extends Day {
     });
   }
 
-  public async solvePartOne(input: Input): Output {
-    const rucksacks = this.parseInput(await input);
+  public async solvePartOne(input: string): Output {
+    const rucksacks = this.parseInput(input);
     const result = rucksacks.map(({ first, second }) => {
       return first.filter((value) => second.includes(value))[0];
     });
     return result.reduce((score, value) => score + value, 0);
   }
 
-  public async solvePartTwo(input: Input): Output {
-    const rucksacks = this.parseInput(await input);
+  public async solvePartTwo(input: string): Output {
+    const rucksacks = this.parseInput(input);
     const result = new Array<number>();
     for (let index = 0; index < rucksacks.length; index += 3) {
       const first = rucksacks[index].total;

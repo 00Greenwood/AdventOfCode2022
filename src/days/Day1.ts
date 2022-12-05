@@ -1,4 +1,4 @@
-import { Day, Input, Output } from "../Day";
+import { Day, Output } from "../Day";
 
 export class Day1 extends Day {
   constructor() {
@@ -12,14 +12,14 @@ export class Day1 extends Day {
     );
   }
 
-  public async solvePartOne(input: Input): Output {
-    const totalCalories = this.countCalories(await input);
+  public async solvePartOne(input: string): Output {
+    const totalCalories = this.countCalories(input);
     const maximum = Math.max(...totalCalories);
     return maximum;
   }
 
-  public async solvePartTwo(input: Input): Output {
-    const totalCalories = this.countCalories(await input);
+  public async solvePartTwo(input: string): Output {
+    const totalCalories = this.countCalories(input);
     let topThree = 0;
     for (let i = 0; i < 3; i++) {
       const maximum = Math.max(...totalCalories);
