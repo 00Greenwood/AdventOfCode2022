@@ -6,7 +6,6 @@
 
 # Node Package Directory
 node_modules
-package-lock.json
 
 # lint-staged
 .eslintcache
