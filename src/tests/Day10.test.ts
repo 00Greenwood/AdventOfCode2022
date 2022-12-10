@@ -22,7 +22,6 @@ describe("Day 10", () => {
     expect(testSoltuion).toEqual(expect.stringContaining("#######.......#######.......#######....."));
 
     const soltuion = await day.solvePartTwo(day.input);
-    console.log(soltuion);
     expect(soltuion).toEqual(expect.stringContaining("####.#..#..##..###..#..#..##..###..#..#."));
     expect(soltuion).toEqual(expect.stringContaining("...#.#.#..#..#.#..#.#.#..#..#.#..#.#.#.."));
     expect(soltuion).toEqual(expect.stringContaining("..#..##...#....#..#.##...#....#..#.##..."));
