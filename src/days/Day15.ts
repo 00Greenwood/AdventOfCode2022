@@ -61,13 +61,13 @@ export class Day15 extends Day {
     return { sensors, beacons };
   }
 
-  findLeft(sensors: Sensor[]): number {
-    const lefts = sensors.map((sensor) => sensor.x - sensor.distance);
+  findLeft(sensors: Sensor[], y: number): number {
+    const lefts = sensors.map((sensor) => sensor.x - (sensor.distance - Math.abs(sensor.y - y)));
     return Math.min(...lefts);
   }
 
-  findRight(sensors: Sensor[]): number {
-    const rights = sensors.map((sensor) => sensor.x + sensor.distance);
+  findRight(sensors: Sensor[], y: number): number {
+    const rights = sensors.map((sensor) => sensor.x + (sensor.distance - Math.abs(sensor.y - y)));
     return Math.max(...rights);
   }
 
@@ -80,7 +80,7 @@ export class Day15 extends Day {
     const y = this.minY;
 
     let count = 0;
-    for (let x = this.findLeft(sensors); x <= this.findRight(sensors); x++) {
+    for (let x = this.findLeft(sensors, y); x <= this.findRight(sensors, y); x++) {
       const sensor = sensors.find((sensor) => calculateDistance(sensor, { x, y }) <= sensor.distance);
       if (!sensor) {
         continue;
