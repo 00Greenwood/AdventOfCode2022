@@ -1,15 +1,13 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 export class Day1 extends Day {
   constructor() {
-    super("Day1");
+    super('Day1');
   }
 
   private countCalories(input: string): number[] {
-    const elves = input.split("\n\n");
-    return elves.map((elf) =>
-      elf.split("\n").reduce((total, calories) => total + parseInt(calories), 0)
-    );
+    const elves = input.split('\n\n');
+    return elves.map((elf) => elf.split('\n').reduce((total, calories) => total + parseInt(calories), 0));
   }
 
   public async solvePartOne(input: string): Output {

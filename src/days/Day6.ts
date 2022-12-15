@@ -1,8 +1,8 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 export class Day6 extends Day {
   constructor() {
-    super("Day6");
+    super('Day6');
   }
 
   private containsDuplicates(section: string): boolean {

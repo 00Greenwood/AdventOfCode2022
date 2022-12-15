@@ -1,8 +1,8 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 export class Day0 extends Day {
   constructor() {
-    super("Day0");
+    super('Day0');
   }
 
   public async solvePartOne(input: string): Output {

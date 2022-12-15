@@ -1,4 +1,4 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 interface Monkey {
   items: number[];
@@ -14,24 +14,24 @@ interface Move {
 
 export class Day11 extends Day {
   constructor() {
-    super("Day11");
+    super('Day11');
   }
 
   parseInput(input: string): Monkey[] {
-    return input.split("\n\n").map((section) => {
-      const lines = section.split("\n");
+    return input.split('\n\n').map((section) => {
+      const lines = section.split('\n');
       const items = lines[1]
-        .replace("  Starting items: ", "")
-        .split(", ")
+        .replace('  Starting items: ', '')
+        .split(', ')
         .map((value) => parseInt(value));
-      const operation = lines[2].replace("  Operation: new = ", "");
-      const divisibleBy = parseInt(lines[3].replace("  Test: divisible by ", ""));
-      const ifTrue = parseInt(lines[4].replace("    If true: throw to monkey ", ""));
-      const ifFalse = parseInt(lines[5].replace("    If false: throw to monkey ", ""));
+      const operation = lines[2].replace('  Operation: new = ', '');
+      const divisibleBy = parseInt(lines[3].replace('  Test: divisible by ', ''));
+      const ifTrue = parseInt(lines[4].replace('    If true: throw to monkey ', ''));
+      const ifFalse = parseInt(lines[5].replace('    If false: throw to monkey ', ''));
 
       return {
         items,
-        operation: (old: number) => eval(operation.replace("old", old.toString())),
+        operation: (old: number) => eval(operation.replace('old', old.toString())),
         testNumber: divisibleBy,
         test: (value: number) => (value % divisibleBy === 0 ? ifTrue : ifFalse),
       };

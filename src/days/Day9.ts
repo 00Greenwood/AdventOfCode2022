@@ -1,22 +1,18 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
+import { Position } from '../interfaces/Position';
 
 interface Motion {
   direction: string;
   steps: number;
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
 export class Day9 extends Day {
   lastIndex = 0;
   knots: Position[] = [];
-  positions = new Set<string>(["0, 0"]);
+  positions = new Set<string>(['0, 0']);
 
   constructor() {
-    super("Day9");
+    super('Day9');
   }
 
   reset(numberOfKnots: number) {
@@ -26,12 +22,12 @@ export class Day9 extends Day {
     for (let i = 0; i < numberOfKnots; i++) {
       this.knots.push({ x: 0, y: 0 });
     }
-    this.positions = new Set<string>(["0, 0"]);
+    this.positions = new Set<string>(['0, 0']);
   }
 
   parseInput(input: string): Motion[] {
-    return input.split("\n").map((line) => {
-      const inputs = line.split(" ");
+    return input.split('\n').map((line) => {
+      const inputs = line.split(' ');
       return { direction: inputs[0], steps: parseInt(inputs[1]) };
     });
   }
@@ -80,16 +76,16 @@ export class Day9 extends Day {
   updateHead({ direction, steps }: Motion) {
     for (let i = 0; i < steps; i++) {
       switch (direction) {
-        case "U":
+        case 'U':
           this.knots[0] = this.moveUp(this.knots[0]);
           break;
-        case "D":
+        case 'D':
           this.knots[0] = this.moveDown(this.knots[0]);
           break;
-        case "L":
+        case 'L':
           this.knots[0] = this.moveLeft(this.knots[0]);
           break;
-        case "R":
+        case 'R':
           this.knots[0] = this.moveRight(this.knots[0]);
           break;
       }
@@ -98,9 +94,7 @@ export class Day9 extends Day {
           this.updateKnot(i);
         }
       }
-      this.positions.add(
-        `${this.knots[this.lastIndex].x}, ${this.knots[this.lastIndex].y}`
-      );
+      this.positions.add(`${this.knots[this.lastIndex].x}, ${this.knots[this.lastIndex].y}`);
     }
   }
 

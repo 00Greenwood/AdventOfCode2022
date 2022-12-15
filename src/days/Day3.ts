@@ -1,4 +1,4 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 interface Rucksack {
   first: number[];
@@ -8,7 +8,7 @@ interface Rucksack {
 
 export class Day3 extends Day {
   constructor() {
-    super("Day3");
+    super('Day3');
   }
 
   private convertFromUnicode(input: number): number {
@@ -19,7 +19,7 @@ export class Day3 extends Day {
   }
 
   private parseInput(input: string): Rucksack[] {
-    return input.split("\n").map<Rucksack>((line) => {
+    return input.split('\n').map<Rucksack>((line) => {
       const middle = line.length / 2;
       const rucksack: Rucksack = { first: [], second: [], total: [] };
       for (let index = 0; index < middle; index++) {

@@ -1,87 +1,86 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
+import { Position } from '../interfaces/Position';
 
-interface Position {
-  x: number;
-  y: number;
+interface Location extends Position {
   height: number;
   value: number;
 }
 
-type Grid = Position[][];
+type Grid = Location[][];
 
 export class Day12 extends Day {
   constructor() {
-    super("Day12");
+    super('Day12');
   }
 
   parseInput(input: string): Grid {
     return input
-      .split("\n")
+      .split('\n')
       .map((line, i) =>
         line
-          .split("")
+          .split('')
           .map((char, j) => ({ x: i, y: j, height: char.charCodeAt(0) - 96, value: Number.MAX_SAFE_INTEGER }))
       );
   }
 
-  findStart(grid: Grid): Position {
+  findStart(grid: Grid): Location {
     for (const row of grid) {
       for (const entry of row) {
-        if (entry.height === "S".charCodeAt(0) - 96) {
-          entry.height = "a".charCodeAt(0) - 97;
+        if (entry.height === 'S'.charCodeAt(0) - 96) {
+          entry.height = 'a'.charCodeAt(0) - 97;
           entry.value = 0;
           return entry;
         }
       }
     }
-    throw Error("Unable to find Start!");
+    throw Error('Unable to find Start!');
   }
 
-  findEnd(grid: Grid): Position {
+  findEnd(grid: Grid): Location {
     for (const row of grid) {
       for (const entry of row) {
-        if (entry.height === "E".charCodeAt(0) - 96) {
-          entry.height = "z".charCodeAt(0) - 95;
+        if (entry.height === 'E'.charCodeAt(0) - 96) {
+          entry.height = 'z'.charCodeAt(0) - 95;
           return entry;
         }
       }
     }
-    throw Error("Unable to find End!");
+    throw Error('Unable to find End!');
   }
 
   isWithinBoundary(x: number, y: number, grid: Grid): boolean {
     return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
   }
 
-  checkRight(previous: Position, grid: Grid) {
+  checkRight(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x + 1, y, grid)) {
       this.checkPosition(grid[x + 1][y], previous, grid);
     }
   }
 
-  checkLeft(previous: Position, grid: Grid) {
+  checkLeft(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x - 1, y, grid)) {
       this.checkPosition(grid[x - 1][y], previous, grid);
     }
   }
 
-  checkUp(previous: Position, grid: Grid) {
+  checkUp(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x, y + 1, grid)) {
       this.checkPosition(grid[x][y + 1], previous, grid);
     }
   }
 
-  checkDown(previous: Position, grid: Grid) {
+  checkDown(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x, y - 1, grid)) {
       this.checkPosition(grid[x][y - 1], previous, grid);
     }
   }
 
-  checkPosition(next: Position, previous: Position, grid: Grid) {
+  checkPosition(next: Location, previous: Location, grid: Grid) {
     if (next.height <= previous.height + 1 && next.value > previous.value + 1) {
       next.value = previous.value + 1;
 

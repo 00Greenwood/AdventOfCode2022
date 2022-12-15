@@ -1,4 +1,4 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 interface File {
   size: number;
@@ -17,7 +17,7 @@ interface Root extends Folder {
 
 export class Day7 extends Day {
   constructor() {
-    super("Day7");
+    super('Day7');
   }
 
   private parseInput(input: string): Root {
@@ -27,18 +27,18 @@ export class Day7 extends Day {
       folders: new Map<string, Folder>(),
     };
     let currentFolder: Root | Folder | undefined = undefined;
-    input.split("\n").forEach((line) => {
-      if (line.startsWith("$ cd /")) {
+    input.split('\n').forEach((line) => {
+      if (line.startsWith('$ cd /')) {
         currentFolder = root;
-      } else if (line.startsWith("$ cd ..")) {
+      } else if (line.startsWith('$ cd ..')) {
         currentFolder = currentFolder?.parent;
-      } else if (line.startsWith("$ cd ")) {
-        const name = line.split(" ")[2];
+      } else if (line.startsWith('$ cd ')) {
+        const name = line.split(' ')[2];
         currentFolder = currentFolder?.folders.get(name);
-      } else if (line.startsWith("$ ls")) {
+      } else if (line.startsWith('$ ls')) {
         // Do nothing ... for now
-      } else if (line.startsWith("dir")) {
-        const name = line.split(" ")[1];
+      } else if (line.startsWith('dir')) {
+        const name = line.split(' ')[1];
         const folder: Folder = {
           size: 0,
           files: new Map<string, File>(),
@@ -47,7 +47,7 @@ export class Day7 extends Day {
         };
         currentFolder?.folders.set(name, folder);
       } else {
-        const sizeAndName = line.split(" ");
+        const sizeAndName = line.split(' ');
         const size = parseInt(sizeAndName[0]);
         const name = sizeAndName[1];
         const file: File = {

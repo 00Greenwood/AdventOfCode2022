@@ -1,24 +1,20 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
+import { Position } from '../interfaces/Position';
 
-type Type = "AIR" | "ROCK" | "SAND";
+type Type = 'AIR' | 'ROCK' | 'SAND';
 
 type Grid = Record<number, Record<number, Type>>;
 
-interface Position {
-  x: number;
-  y: number;
-}
-
 export class Day14 extends Day {
   constructor() {
-    super("Day14");
+    super('Day14');
   }
 
   parseInput(input: string): Grid {
     const grid: Grid = {};
-    input.split("\n").forEach((line) => {
-      const positions: Position[] = line.split(" -> ").map((positions) => {
-        const values = positions.split(",").map((value) => parseInt(value));
+    input.split('\n').forEach((line) => {
+      const positions: Position[] = line.split(' -> ').map((positions) => {
+        const values = positions.split(',').map((value) => parseInt(value));
         return { x: values[0], y: values[1] };
       });
       let start = positions[0];
@@ -27,19 +23,19 @@ export class Day14 extends Day {
         const end = positions[i];
         for (let j = start.x; j <= end.x; j++) {
           if (!grid[j]) grid[j] = {};
-          grid[j][end.y] = "ROCK";
+          grid[j][end.y] = 'ROCK';
         }
         for (let j = start.x; j >= end.x; j--) {
           if (!grid[j]) grid[j] = {};
-          grid[j][end.y] = "ROCK";
+          grid[j][end.y] = 'ROCK';
         }
         for (let j = start.y; j <= end.y; j++) {
           if (!grid[end.x]) grid[end.x] = {};
-          grid[end.x][j] = "ROCK";
+          grid[end.x][j] = 'ROCK';
         }
         for (let j = start.y; j >= end.y; j--) {
           if (!grid[end.x]) grid[end.x] = {};
-          grid[end.x][j] = "ROCK";
+          grid[end.x][j] = 'ROCK';
         }
         start = end;
       }
@@ -49,9 +45,9 @@ export class Day14 extends Day {
   }
 
   moveDown(grid: Grid, { x, y }: Position): boolean {
-    if (!grid[x][y + 1] || grid[x][y + 1] === "AIR") {
-      grid[x][y + 1] = "SAND";
-      grid[x][y] = "AIR";
+    if (!grid[x][y + 1] || grid[x][y + 1] === 'AIR') {
+      grid[x][y + 1] = 'SAND';
+      grid[x][y] = 'AIR';
       return true;
     }
     return false;
@@ -59,9 +55,9 @@ export class Day14 extends Day {
 
   moveDownLeft(grid: Grid, { x, y }: Position): boolean {
     if (!grid[x - 1]) grid[x - 1] = {};
-    if (!grid[x - 1][y + 1] || grid[x - 1][y + 1] === "AIR") {
-      grid[x - 1][y + 1] = "SAND";
-      grid[x][y] = "AIR";
+    if (!grid[x - 1][y + 1] || grid[x - 1][y + 1] === 'AIR') {
+      grid[x - 1][y + 1] = 'SAND';
+      grid[x][y] = 'AIR';
       return true;
     }
     return false;
@@ -69,9 +65,9 @@ export class Day14 extends Day {
 
   moveDownRight(grid: Grid, { x, y }: Position): boolean {
     if (!grid[x + 1]) grid[x + 1] = {};
-    if (!grid[x + 1][y + 1] || grid[x + 1][y + 1] === "AIR") {
-      grid[x + 1][y + 1] = "SAND";
-      grid[x][y] = "AIR";
+    if (!grid[x + 1][y + 1] || grid[x + 1][y + 1] === 'AIR') {
+      grid[x + 1][y + 1] = 'SAND';
+      grid[x][y] = 'AIR';
       return true;
     }
     return false;
@@ -85,7 +81,7 @@ export class Day14 extends Day {
 
   countSand(grid: Grid): number {
     return Object.values(grid).reduce(
-      (total, row) => total + Object.values(row).reduce((subTotal, value) => subTotal + (value === "SAND" ? 1 : 0), 0),
+      (total, row) => total + Object.values(row).reduce((subTotal, value) => subTotal + (value === 'SAND' ? 1 : 0), 0),
       0
     );
   }
@@ -99,14 +95,14 @@ export class Day14 extends Day {
     while (simulating) {
       let pointer: Position = { x: 500, y: 0 };
       if (!grid[pointer.x]) grid[pointer.x] = {};
-      grid[pointer.x][pointer.y] = "SAND";
+      grid[pointer.x][pointer.y] = 'SAND';
 
       let falling = true;
       while (falling) {
         const { x, y } = pointer;
 
         if (y > bottom) {
-          grid[x][y] = "AIR";
+          grid[x][y] = 'AIR';
           simulating = false;
           break;
         }
@@ -143,11 +139,11 @@ export class Day14 extends Day {
       let pointer: Position = { x: 500, y: 0 };
       if (!grid[pointer.x]) grid[pointer.x] = {};
 
-      if (grid[pointer.x][pointer.y] === "SAND") {
+      if (grid[pointer.x][pointer.y] === 'SAND') {
         simulating = false;
         break;
       }
-      grid[pointer.x][pointer.y] = "SAND";
+      grid[pointer.x][pointer.y] = 'SAND';
 
       let falling = true;
       while (falling) {

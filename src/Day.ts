@@ -1,5 +1,5 @@
-import { readFileSync } from "fs";
-import path = require("path");
+import { readFileSync } from 'fs';
+import path = require('path');
 
 export type Output = Promise<string | number>;
 
@@ -16,14 +16,7 @@ export abstract class Day {
 
   // Load either the input or the test input.
   private load(isTest: boolean): string {
-    return readFileSync(
-      path.resolve(
-        __dirname,
-        "../inputs",
-        `${this.name}${isTest ? ".test" : ""}.txt`
-      ),
-      "utf-8"
-    );
+    return readFileSync(path.resolve(__dirname, '../inputs', `${this.name}${isTest ? '.test' : ''}.txt`), 'utf-8');
   }
 
   abstract solvePartOne(input: string): Output;

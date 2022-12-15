@@ -1,4 +1,4 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 interface Area {
   lower: number;
@@ -12,11 +12,11 @@ interface Pair {
 
 export class Day4 extends Day {
   constructor() {
-    super("Day4");
+    super('Day4');
   }
 
   private parseInput(input: string): Pair[] {
-    return input.split("\n").map((line) => {
+    return input.split('\n').map((line) => {
       const numbers = line.split(/,|-/);
       return {
         first: {
@@ -43,10 +43,7 @@ export class Day4 extends Day {
 
   public async solvePartTwo(input: string): Output {
     const pairs = this.parseInput(input);
-    const seperate = pairs.filter(
-      ({ first, second }) =>
-        first.lower > second.upper || second.lower > first.upper
-    );
+    const seperate = pairs.filter(({ first, second }) => first.lower > second.upper || second.lower > first.upper);
     return pairs.length - seperate.length;
   }
 }

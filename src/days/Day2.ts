@@ -1,4 +1,4 @@
-import { Day, Output } from "../Day";
+import { Day, Output } from '../Day';
 
 enum Results {
   Lose = 0,
@@ -30,14 +30,14 @@ class Game {
 
   private parseOptions(input: string): Options {
     switch (input) {
-      case "A":
-      case "X":
+      case 'A':
+      case 'X':
         return Options.Rock;
-      case "B":
-      case "Y":
+      case 'B':
+      case 'Y':
         return Options.Paper;
-      case "C":
-      case "Z":
+      case 'C':
+      case 'Z':
         return Options.Scissors;
       default:
         throw new Error(`Unexpected Input: ${input}!`);
@@ -46,11 +46,11 @@ class Game {
 
   private parseResults(input: string): Results {
     switch (input) {
-      case "X":
+      case 'X':
         return Results.Lose;
-      case "Y":
+      case 'Y':
         return Results.Draw;
-      case "Z":
+      case 'Z':
         return Results.Win;
       default:
         throw new Error(`Unexpected Input: ${input}!`);
@@ -68,7 +68,7 @@ class Game {
           case Options.Scissors:
             return Results.Lose;
           default:
-            throw new Error("Unexpected Option!");
+            throw new Error('Unexpected Option!');
         }
       case Options.Paper:
         switch (this.response) {
@@ -79,7 +79,7 @@ class Game {
           case Options.Scissors:
             return Results.Win;
           default:
-            throw new Error("Unexpected Option!");
+            throw new Error('Unexpected Option!');
         }
       case Options.Scissors:
         switch (this.response) {
@@ -90,10 +90,10 @@ class Game {
           case Options.Scissors:
             return Results.Draw;
           default:
-            throw new Error("Unexpected Option!");
+            throw new Error('Unexpected Option!');
         }
       default:
-        throw new Error("Unexpected Option!");
+        throw new Error('Unexpected Option!');
     }
   }
 
@@ -108,7 +108,7 @@ class Game {
           case Results.Lose:
             return Options.Scissors;
           default:
-            throw new Error("Unexpected Result!");
+            throw new Error('Unexpected Result!');
         }
       case Options.Paper:
         switch (this.result) {
@@ -119,7 +119,7 @@ class Game {
           case Results.Win:
             return Options.Scissors;
           default:
-            throw new Error("Unexpected Result!");
+            throw new Error('Unexpected Result!');
         }
       case Options.Scissors:
         switch (this.result) {
@@ -130,42 +130,36 @@ class Game {
           case Results.Draw:
             return Options.Scissors;
           default:
-            throw new Error("Unexpected Result!");
+            throw new Error('Unexpected Result!');
         }
       default:
-        throw new Error("Unexpected Option!");
+        throw new Error('Unexpected Option!');
     }
   }
 }
 
 export class Day2 extends Day {
   constructor() {
-    super("Day2");
+    super('Day2');
   }
 
   private parseInput(input: string, isPart1: boolean): Game[] {
-    const games = input.split("\n");
+    const games = input.split('\n');
     return games.map((game) => {
-      const split = game.split(" ");
+      const split = game.split(' ');
       return new Game(split[0], split[1], isPart1);
     });
   }
 
   public async solvePartOne(input: string): Output {
     const games = this.parseInput(input, true);
-    const score = games.reduce(
-      (score, game) => score + game.response + game.result,
-      0
-    );
+    const score = games.reduce((score, game) => score + game.response + game.result, 0);
     return score;
   }
 
   public async solvePartTwo(input: string): Output {
     const games = this.parseInput(input, false);
-    const score = games.reduce(
-      (score, game) => score + game.response + game.result,
-      0
-    );
+    const score = games.reduce((score, game) => score + game.response + game.result, 0);
     return score;
   }
 }

@@ -1,9 +1,5 @@
-import { Day, Output } from "../Day";
-
-interface Position {
-  x: number;
-  y: number;
-}
+import { Day, Output } from '../Day';
+import { Position } from '../interfaces/Position';
 
 type IterateDirection = (pos: Position) => Position;
 
@@ -13,19 +9,15 @@ export class Day8 extends Day {
   trees: number[][] = [];
 
   constructor() {
-    super("Day8");
+    super('Day8');
   }
 
   parseInput(input: string): number[][] {
-    return input
-      .split("\n")
-      .map((line) => line.split("").map((char) => parseInt(char)));
+    return input.split('\n').map((line) => line.split('').map((char) => parseInt(char)));
   }
 
   isWithinBoundary(pos: Position): boolean {
-    return (
-      pos.x >= 0 && pos.x < this.width && pos.y >= 0 && pos.y < this.height
-    );
+    return pos.x >= 0 && pos.x < this.width && pos.y >= 0 && pos.y < this.height;
   }
 
   iterateUp(pos: Position): Position {
@@ -44,16 +36,9 @@ export class Day8 extends Day {
     return { x: pos.x + 1, y: pos.y };
   }
 
-  isVisibleFromDirection(
-    height: number,
-    pos: Position,
-    iterateDirection: IterateDirection
-  ): boolean {
+  isVisibleFromDirection(height: number, pos: Position, iterateDirection: IterateDirection): boolean {
     let nextPos = iterateDirection(pos);
-    while (
-      this.isWithinBoundary(nextPos) &&
-      this.trees[nextPos.x][nextPos.y] < height
-    ) {
+    while (this.isWithinBoundary(nextPos) && this.trees[nextPos.x][nextPos.y] < height) {
       nextPos = iterateDirection(nextPos);
     }
     return !this.isWithinBoundary(nextPos);
@@ -69,17 +54,10 @@ export class Day8 extends Day {
     );
   }
 
-  countVisibleDirection(
-    height: number,
-    pos: Position,
-    iterateDirection: IterateDirection
-  ): number {
+  countVisibleDirection(height: number, pos: Position, iterateDirection: IterateDirection): number {
     let nextPos = iterateDirection(pos);
     let count = 0;
-    while (
-      this.isWithinBoundary(nextPos) &&
-      this.trees[nextPos.x][nextPos.y] < height
-    ) {
+    while (this.isWithinBoundary(nextPos) && this.trees[nextPos.x][nextPos.y] < height) {
       count++;
       nextPos = iterateDirection(nextPos);
     }
