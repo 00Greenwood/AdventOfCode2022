@@ -55,8 +55,7 @@ export class Day15 extends Day {
     });
 
     // Sorting sensors to be ordered
-    sensors = sensors.sort((a, b) => a.y - b.y);
-    sensors = sensors.sort((a, b) => a.x - b.x);
+    sensors = sensors.sort((a, b) => b.distance - a.distance);
 
     return { sensors, beacons };
   }
