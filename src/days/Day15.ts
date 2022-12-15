@@ -1,32 +1,25 @@
+import path, { resolve } from 'path';
+import { Worker, workerData } from 'worker_threads';
 import { Day, Output } from '../Day';
-import { Position } from '../interfaces/Position';
+import { Beacon } from '../interfaces/Beacon';
+import { Range } from '../interfaces/Range';
+import { Sensor } from '../interfaces/Sensors';
 import { calculateDistance } from '../utilities/calculateDistance';
 
-type Beacon = Position;
-
-interface Sensor extends Position {
-  beacon: Beacon;
-  distance: number;
-}
-
 export class Day15 extends Day {
-  minX?: number;
-  maxX?: number;
-  minY?: number;
-  maxY?: number;
+  x?: number;
+  y?: number;
 
   constructor() {
     super('Day15');
   }
 
-  setXRange(minX: number, maxX: number) {
-    this.minX = minX;
-    this.maxX = maxX;
+  setX(x: number) {
+    this.x = x;
   }
 
-  setYRange(minY: number, maxY: number) {
-    this.minY = minY;
-    this.maxY = maxY;
+  setY(y: number) {
+    this.y = y;
   }
 
   parseInput(input: string): { sensors: Sensor[]; beacons: Beacon[] } {
@@ -73,10 +66,10 @@ export class Day15 extends Day {
   public async solvePartOne(input: string): Output {
     const { sensors, beacons } = this.parseInput(input);
 
-    if (this.minY === undefined || this.maxY === undefined || this.minY !== this.maxY) {
-      throw new Error('Min and Max of Y should be defined!');
+    if (!this.y) {
+      throw new Error('Y should be defined!');
     }
-    const y = this.minY;
+    const y = this.y;
 
     let count = 0;
     for (let x = this.findLeft(sensors, y); x <= this.findRight(sensors, y); x++) {
@@ -101,22 +94,32 @@ export class Day15 extends Day {
   public async solvePartTwo(input: string): Output {
     const { sensors } = this.parseInput(input);
 
-    if (this.minX === undefined || this.maxX === undefined || this.minY === undefined || this.maxY === undefined) {
-      throw new Error('Min and Max of X and Y should be defined!');
+    if (!this.x || !this.y) {
+      throw new Error('X and Y should be defined!');
     }
+    const x = this.x;
 
-    for (let x = this.minX; x <= this.maxX; x++) {
-      for (let y = this.minY; y <= this.maxY; y++) {
-        const sensor = sensors.find((sensor) => calculateDistance(sensor, { x, y }) <= sensor.distance);
-        if (!sensor) {
-          return 4000000 * x + y;
-        }
-        // Skip forward the rest of the values in the sensor.
-        const skip = sensor.y - y + sensor.distance - Math.abs(sensor.x - x);
-        y += skip;
-      }
-    }
+    return await new Promise<number>((resolve, reject) => {
+      const worker = new Worker(path.resolve(__dirname, '../workers/findBeacon.js'), {
+        workerData: {
+          path: './findBeacon.ts',
+          sensors,
+          y: this.y,
+        },
+      });
 
-    throw new Error('Unable to find Beacon');
+      worker.on('message', (data) => {
+        worker.terminate();
+        resolve(data);
+      });
+
+      worker.on('error', (error) => {
+        worker.terminate();
+        reject(error);
+      });
+
+      const range: Range = { lower: 0, upper: x };
+      worker.postMessage(range);
+    });
   }
 }
