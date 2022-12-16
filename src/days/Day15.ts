@@ -1,28 +1,25 @@
-import path, { resolve } from 'path';
-import { Worker, workerData } from 'worker_threads';
 import { Day, Output } from '../Day';
 import { Beacon } from '../interfaces/Beacon';
-import { Range } from '../interfaces/Range';
 import { Sensor } from '../interfaces/Sensors';
 import { calculateDistance } from '../utilities/calculateDistance';
 
 export class Day15 extends Day {
-  x?: number;
-  y?: number;
+  private x?: number;
+  private y?: number;
 
-  constructor() {
+  public constructor() {
     super('Day15');
   }
 
-  setX(x: number) {
+  public setX(x: number) {
     this.x = x;
   }
 
-  setY(y: number) {
+  public setY(y: number) {
     this.y = y;
   }
 
-  parseInput(input: string): { sensors: Sensor[]; beacons: Beacon[] } {
+  private parseInput(input: string): { sensors: Sensor[]; beacons: Beacon[] } {
     const beacons: Beacon[] = [];
     let sensors: Sensor[] = [];
     input.split('\n').forEach((line) => {
@@ -53,12 +50,12 @@ export class Day15 extends Day {
     return { sensors, beacons };
   }
 
-  findLeft(sensors: Sensor[], y: number): number {
+  private findLeft(sensors: Sensor[], y: number): number {
     const lefts = sensors.map((sensor) => sensor.x - (sensor.distance - Math.abs(sensor.y - y)));
     return Math.min(...lefts);
   }
 
-  findRight(sensors: Sensor[], y: number): number {
+  private findRight(sensors: Sensor[], y: number): number {
     const rights = sensors.map((sensor) => sensor.x + (sensor.distance - Math.abs(sensor.y - y)));
     return Math.max(...rights);
   }
@@ -97,29 +94,19 @@ export class Day15 extends Day {
     if (!this.x || !this.y) {
       throw new Error('X and Y should be defined!');
     }
-    const x = this.x;
 
-    return await new Promise<number>((resolve, reject) => {
-      const worker = new Worker(path.resolve(__dirname, '../workers/findBeacon.js'), {
-        workerData: {
-          path: './findBeacon.ts',
-          sensors,
-          y: this.y,
-        },
-      });
+    for (let x = this.x; x >= 0; x--) {
+      for (let y = 0; y <= this.y; y++) {
+        const sensor = sensors.find((sensor) => calculateDistance(sensor, { x, y }) <= sensor.distance);
+        if (!sensor) {
+          return 4000000 * x + y;
+        }
+        // Skip forward the rest of the values in the sensor.
+        const skip = sensor.y - y + sensor.distance - Math.abs(sensor.x - x);
+        y += skip;
+      }
+    }
 
-      worker.on('message', (data) => {
-        worker.terminate();
-        resolve(data);
-      });
-
-      worker.on('error', (error) => {
-        worker.terminate();
-        reject(error);
-      });
-
-      const range: Range = { lower: 0, upper: x };
-      worker.postMessage(range);
-    });
+    throw new Error('Unable to find Beacon!');
   }
 }

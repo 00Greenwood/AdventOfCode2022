@@ -1,7 +1,7 @@
 import { Day, Output } from '../Day';
 
 export class Day1 extends Day {
-  constructor() {
+  public constructor() {
     super('Day1');
   }
 

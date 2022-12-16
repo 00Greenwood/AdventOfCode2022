@@ -6,11 +6,11 @@ interface Instruction {
 }
 
 export class Day10 extends Day {
-  constructor() {
+  public constructor() {
     super('Day10');
   }
 
-  parseInput(input: string): Instruction[] {
+  private parseInput(input: string): Instruction[] {
     return input.split('\n').map((line) => {
       const sections = line.split(' ');
       return {
@@ -42,14 +42,14 @@ export class Day10 extends Day {
     return strength;
   }
 
-  drawPixel(crtPosition: number, spritePosition: number) {
+  private drawPixel(crtPosition: number, spritePosition: number) {
     if (crtPosition >= spritePosition - 1 && crtPosition <= spritePosition + 1) {
       return '#';
     }
     return '.';
   }
 
-  updateCrtPosition(crtPosition: number): number {
+  private updateCrtPosition(crtPosition: number): number {
     return (crtPosition + 1) % 40;
   }
 

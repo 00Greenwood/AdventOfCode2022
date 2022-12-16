@@ -11,7 +11,7 @@ interface Pair {
 }
 
 export class Day4 extends Day {
-  constructor() {
+  public constructor() {
     super('Day4');
   }
 

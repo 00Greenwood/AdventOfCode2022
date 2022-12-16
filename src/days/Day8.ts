@@ -4,39 +4,39 @@ import { Position } from '../interfaces/Position';
 type IterateDirection = (pos: Position) => Position;
 
 export class Day8 extends Day {
-  width = 0;
-  height = 0;
-  trees: number[][] = [];
+  private width = 0;
+  private height = 0;
+  private trees: number[][] = [];
 
-  constructor() {
+  public constructor() {
     super('Day8');
   }
 
-  parseInput(input: string): number[][] {
+  private parseInput(input: string): number[][] {
     return input.split('\n').map((line) => line.split('').map((char) => parseInt(char)));
   }
 
-  isWithinBoundary(pos: Position): boolean {
+  private isWithinBoundary(pos: Position): boolean {
     return pos.x >= 0 && pos.x < this.width && pos.y >= 0 && pos.y < this.height;
   }
 
-  iterateUp(pos: Position): Position {
+  private iterateUp(pos: Position): Position {
     return { x: pos.x, y: pos.y - 1 };
   }
 
-  iterateDown(pos: Position): Position {
+  private iterateDown(pos: Position): Position {
     return { x: pos.x, y: pos.y + 1 };
   }
 
-  iterateLeft(pos: Position): Position {
+  private iterateLeft(pos: Position): Position {
     return { x: pos.x - 1, y: pos.y };
   }
 
-  iterateRight(pos: Position): Position {
+  private iterateRight(pos: Position): Position {
     return { x: pos.x + 1, y: pos.y };
   }
 
-  isVisibleFromDirection(height: number, pos: Position, iterateDirection: IterateDirection): boolean {
+  private isVisibleFromDirection(height: number, pos: Position, iterateDirection: IterateDirection): boolean {
     let nextPos = iterateDirection(pos);
     while (this.isWithinBoundary(nextPos) && this.trees[nextPos.x][nextPos.y] < height) {
       nextPos = iterateDirection(nextPos);
@@ -44,7 +44,7 @@ export class Day8 extends Day {
     return !this.isWithinBoundary(nextPos);
   }
 
-  isVisible(pos: Position): boolean {
+  private isVisible(pos: Position): boolean {
     const height = this.trees[pos.x][pos.y];
     return (
       this.isVisibleFromDirection(height, pos, this.iterateUp) ||
@@ -54,7 +54,7 @@ export class Day8 extends Day {
     );
   }
 
-  countVisibleDirection(height: number, pos: Position, iterateDirection: IterateDirection): number {
+  private countVisibleDirection(height: number, pos: Position, iterateDirection: IterateDirection): number {
     let nextPos = iterateDirection(pos);
     let count = 0;
     while (this.isWithinBoundary(nextPos) && this.trees[nextPos.x][nextPos.y] < height) {
@@ -67,7 +67,7 @@ export class Day8 extends Day {
     return count;
   }
 
-  countVisible(pos: Position): number {
+  private countVisible(pos: Position): number {
     const height = this.trees[pos.x][pos.y];
 
     return (

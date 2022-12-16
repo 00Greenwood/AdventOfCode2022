@@ -13,11 +13,11 @@ enum Options {
 }
 
 class Game {
-  readonly enemy: Options;
-  readonly response: Options;
-  readonly result: Results;
+  public readonly enemy: Options;
+  public readonly response: Options;
+  public readonly result: Results;
 
-  constructor(enemy: string, responseOrResult: string, isResponse: boolean) {
+  public constructor(enemy: string, responseOrResult: string, isResponse: boolean) {
     this.enemy = this.parseOptions(enemy);
     if (isResponse) {
       this.response = this.parseOptions(responseOrResult);
@@ -139,7 +139,7 @@ class Game {
 }
 
 export class Day2 extends Day {
-  constructor() {
+  public constructor() {
     super('Day2');
   }
 

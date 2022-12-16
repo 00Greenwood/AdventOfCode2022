@@ -7,7 +7,7 @@ interface Rucksack {
 }
 
 export class Day3 extends Day {
-  constructor() {
+  public constructor() {
     super('Day3');
   }
 

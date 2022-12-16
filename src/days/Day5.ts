@@ -10,8 +10,15 @@ interface Instruction {
 }
 
 export class Day5 extends Day {
-  constructor() {
+  public constructor() {
     super('Day5');
+  }
+
+  private parseInput(input: string): { stacks: Stack[]; instructions: Instruction[] } {
+    const splitInput = input.split('\n\n');
+    const stacks = this.parseStacks(splitInput[0]);
+    const instructions = this.parseInstructions(splitInput[1]);
+    return { stacks, instructions };
   }
 
   private parseStacks(input: string): Stacks {
@@ -43,9 +50,7 @@ export class Day5 extends Day {
   }
 
   public async solvePartOne(input: string): Output {
-    const splitInput = input.split('\n\n');
-    const stacks = this.parseStacks(splitInput[0]);
-    const instructions = this.parseInstructions(splitInput[1]);
+    const { stacks, instructions } = this.parseInput(input);
     instructions.forEach(({ quantity, from, to }) => {
       for (let i = 0; i < quantity; i++) {
         const crate = stacks[from - 1].pop();
@@ -58,9 +63,7 @@ export class Day5 extends Day {
   }
 
   public async solvePartTwo(input: string): Output {
-    const splitInput = input.split('\n\n');
-    const stacks = this.parseStacks(splitInput[0]);
-    const instructions = this.parseInstructions(splitInput[1]);
+    const { stacks, instructions } = this.parseInput(input);
     instructions.forEach(({ quantity, from, to }) => {
       const craneStack: Stack = [];
       for (let i = 0; i < quantity; i++) {

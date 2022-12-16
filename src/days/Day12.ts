@@ -9,11 +9,11 @@ interface Location extends Position {
 type Grid = Location[][];
 
 export class Day12 extends Day {
-  constructor() {
+  public constructor() {
     super('Day12');
   }
 
-  parseInput(input: string): Grid {
+  private parseInput(input: string): Grid {
     return input
       .split('\n')
       .map((line, i) =>
@@ -23,7 +23,7 @@ export class Day12 extends Day {
       );
   }
 
-  findStart(grid: Grid): Location {
+  private findStart(grid: Grid): Location {
     for (const row of grid) {
       for (const entry of row) {
         if (entry.height === 'S'.charCodeAt(0) - 96) {
@@ -36,7 +36,7 @@ export class Day12 extends Day {
     throw Error('Unable to find Start!');
   }
 
-  findEnd(grid: Grid): Location {
+  private findEnd(grid: Grid): Location {
     for (const row of grid) {
       for (const entry of row) {
         if (entry.height === 'E'.charCodeAt(0) - 96) {
@@ -48,39 +48,39 @@ export class Day12 extends Day {
     throw Error('Unable to find End!');
   }
 
-  isWithinBoundary(x: number, y: number, grid: Grid): boolean {
+  private isWithinBoundary(x: number, y: number, grid: Grid): boolean {
     return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
   }
 
-  checkRight(previous: Location, grid: Grid) {
+  private checkRight(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x + 1, y, grid)) {
       this.checkPosition(grid[x + 1][y], previous, grid);
     }
   }
 
-  checkLeft(previous: Location, grid: Grid) {
+  private checkLeft(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x - 1, y, grid)) {
       this.checkPosition(grid[x - 1][y], previous, grid);
     }
   }
 
-  checkUp(previous: Location, grid: Grid) {
+  private checkUp(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x, y + 1, grid)) {
       this.checkPosition(grid[x][y + 1], previous, grid);
     }
   }
 
-  checkDown(previous: Location, grid: Grid) {
+  private checkDown(previous: Location, grid: Grid) {
     const { x, y } = previous;
     if (this.isWithinBoundary(x, y - 1, grid)) {
       this.checkPosition(grid[x][y - 1], previous, grid);
     }
   }
 
-  checkPosition(next: Location, previous: Location, grid: Grid) {
+  private checkPosition(next: Location, previous: Location, grid: Grid) {
     if (next.height <= previous.height + 1 && next.value > previous.value + 1) {
       next.value = previous.value + 1;
 

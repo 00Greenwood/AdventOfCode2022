@@ -7,15 +7,15 @@ interface Motion {
 }
 
 export class Day9 extends Day {
-  lastIndex = 0;
-  knots: Position[] = [];
-  positions = new Set<string>(['0, 0']);
+  private lastIndex = 0;
+  private knots: Position[] = [];
+  private positions = new Set<string>(['0, 0']);
 
-  constructor() {
+  public constructor() {
     super('Day9');
   }
 
-  reset(numberOfKnots: number) {
+  private reset(numberOfKnots: number) {
     this.lastIndex = numberOfKnots - 1;
     this.knots = [];
 
@@ -25,30 +25,30 @@ export class Day9 extends Day {
     this.positions = new Set<string>(['0, 0']);
   }
 
-  parseInput(input: string): Motion[] {
+  private parseInput(input: string): Motion[] {
     return input.split('\n').map((line) => {
       const inputs = line.split(' ');
       return { direction: inputs[0], steps: parseInt(inputs[1]) };
     });
   }
 
-  moveUp({ x, y }: Position): Position {
+  private moveUp({ x, y }: Position): Position {
     return { x, y: y + 1 };
   }
 
-  moveDown({ x, y }: Position): Position {
+  private moveDown({ x, y }: Position): Position {
     return { x, y: y - 1 };
   }
 
-  moveLeft({ x, y }: Position): Position {
+  private moveLeft({ x, y }: Position): Position {
     return { x: x - 1, y };
   }
 
-  moveRight({ x, y }: Position): Position {
+  private moveRight({ x, y }: Position): Position {
     return { x: x + 1, y };
   }
 
-  isKnotTouching(index: number): boolean {
+  private isKnotTouching(index: number): boolean {
     return (
       this.knots[index].x >= this.knots[index - 1].x - 1 &&
       this.knots[index].x <= this.knots[index - 1].x + 1 &&
@@ -57,7 +57,7 @@ export class Day9 extends Day {
     );
   }
 
-  updateKnot(index: number) {
+  private updateKnot(index: number) {
     const diffX = this.knots[index - 1].x - this.knots[index].x;
     const diffY = this.knots[index - 1].y - this.knots[index].y;
     if (diffY > 0) {
@@ -73,7 +73,7 @@ export class Day9 extends Day {
     }
   }
 
-  updateHead({ direction, steps }: Motion) {
+  private updateHead({ direction, steps }: Motion) {
     for (let i = 0; i < steps; i++) {
       switch (direction) {
         case 'U':

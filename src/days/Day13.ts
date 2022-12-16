@@ -10,18 +10,18 @@ interface Pair {
 type Result = 'CORRECT' | 'CONTINUE' | 'INCORRECT';
 
 export class Day13 extends Day {
-  constructor() {
+  public constructor() {
     super('Day13');
   }
 
-  parseInput(input: string): Pair[] {
+  private parseInput(input: string): Pair[] {
     return input.split('\n\n').map((pairs) => {
       const split = pairs.split('\n');
       return { first: eval(split[0]), second: eval(split[1]) };
     });
   }
 
-  compare(left: List, right: List): Result {
+  private compare(left: List, right: List): Result {
     if (!Array.isArray(left) && !Array.isArray(right)) {
       if (right < left) return 'INCORRECT';
       if (right === left) return 'CONTINUE';

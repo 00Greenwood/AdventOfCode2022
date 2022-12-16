@@ -16,7 +16,7 @@ interface Root extends Folder {
 }
 
 export class Day7 extends Day {
-  constructor() {
+  public constructor() {
     super('Day7');
   }
 
@@ -65,7 +65,7 @@ export class Day7 extends Day {
     return root;
   }
 
-  getSmallFolders(folder: Folder, size: number): Folder[] {
+  private getSmallFolders(folder: Folder, size: number): Folder[] {
     let folders: Folder[] = [];
     folder.folders.forEach((child) => {
       folders = folders.concat(this.getSmallFolders(child, size));
@@ -77,7 +77,7 @@ export class Day7 extends Day {
     return folders;
   }
 
-  getLargeFolders(folder: Folder, size: number): Folder[] {
+  private getLargeFolders(folder: Folder, size: number): Folder[] {
     let folders: Folder[] = [];
     folder.folders.forEach((child) => {
       folders = folders.concat(this.getLargeFolders(child, size));

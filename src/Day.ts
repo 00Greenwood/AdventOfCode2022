@@ -4,11 +4,11 @@ import path = require('path');
 export type Output = Promise<string | number>;
 
 export abstract class Day {
-  readonly name: string;
-  readonly input: string;
-  readonly testInput: string;
+  public readonly name: string;
+  public readonly input: string;
+  public readonly testInput: string;
 
-  constructor(name: string) {
+  protected constructor(name: string) {
     this.name = name;
     this.input = this.load(false /*= isTest*/);
     this.testInput = this.load(true) /*= isTest*/;
@@ -19,6 +19,6 @@ export abstract class Day {
     return readFileSync(path.resolve(__dirname, '../inputs', `${this.name}${isTest ? '.test' : ''}.txt`), 'utf-8');
   }
 
-  abstract solvePartOne(input: string): Output;
-  abstract solvePartTwo(input: string): Output;
+  public abstract solvePartOne(input: string): Output;
+  public abstract solvePartTwo(input: string): Output;
 }

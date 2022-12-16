@@ -13,11 +13,11 @@ interface Move {
 }
 
 export class Day11 extends Day {
-  constructor() {
+  public constructor() {
     super('Day11');
   }
 
-  parseInput(input: string): Monkey[] {
+  private parseInput(input: string): Monkey[] {
     return input.split('\n\n').map((section) => {
       const lines = section.split('\n');
       const items = lines[1]
@@ -38,14 +38,16 @@ export class Day11 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
-    const monkeys = this.parseInput(input);
+  private runMonkeySimulation(
+    monkeys: Monkey[],
+    rounds: number,
+    worryLevelReducer: (monkey: Monkey, value: number) => number
+  ): number[] {
     const inspections = monkeys.map(() => 0);
-
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < rounds; i++) {
       monkeys.forEach((monkey, index) => {
         const moves: Move[] = monkey.items.map((item) => {
-          const value = Math.floor(monkey.operation(item) / 3);
+          const value = worryLevelReducer(monkey, item);
           inspections[index]++;
           return { value, nextMonkey: monkey.test(value) };
         });
@@ -53,29 +55,25 @@ export class Day11 extends Day {
         monkey.items = [];
       });
     }
+    return inspections;
+  }
 
+  public async solvePartOne(input: string): Output {
+    const monkeys = this.parseInput(input);
+    const worryLevelReducer = (monkey: Monkey, value: number) => Math.floor(monkey.operation(value) / 3);
+
+    const inspections = this.runMonkeySimulation(monkeys, 20, worryLevelReducer);
     const sorted = inspections.sort((a, b) => b - a);
     return sorted[0] * sorted[1];
   }
 
   public async solvePartTwo(input: string): Output {
     const monkeys = this.parseInput(input);
-    const inspections = monkeys.map(() => 0);
 
     const lcm = monkeys.reduce((total, monkey) => total * monkey.testNumber, 1);
+    const worryLevelReducer = (monkey: Monkey, value: number) => monkey.operation(value) % lcm;
 
-    for (let i = 0; i < 10000; i++) {
-      monkeys.forEach((monkey, index) => {
-        const moves: Move[] = monkey.items.map((item) => {
-          const value = monkey.operation(item) % lcm;
-          inspections[index]++;
-          return { value, nextMonkey: monkey.test(value) };
-        });
-        moves.forEach(({ value, nextMonkey }) => monkeys[nextMonkey].items.push(value));
-        monkey.items = [];
-      });
-    }
-
+    const inspections = this.runMonkeySimulation(monkeys, 10000, worryLevelReducer);
     const sorted = inspections.sort((a, b) => b - a);
     return sorted[0] * sorted[1];
   }
