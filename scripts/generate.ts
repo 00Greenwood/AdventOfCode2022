@@ -28,6 +28,6 @@ source = source.replaceAll('0', day);
 writeFileSync(path.resolve(__dirname, `../src/days/Day${day}.ts`), source, 'utf-8');
 
 // Copy Test
-let test = readFileSync(path.resolve(__dirname, '../src/tests/Day0.test.ts'), 'utf-8');
+let test = readFileSync(path.resolve(__dirname, '../src/tests/days/Day0.test.ts'), 'utf-8');
 test = test.replaceAll('0', day);
-writeFileSync(path.resolve(__dirname, `../src/tests/Day${day}.test.ts`), test, 'utf-8');
+writeFileSync(path.resolve(__dirname, `../src/tests/days/Day${day}.test.ts`), test, 'utf-8');

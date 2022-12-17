@@ -5,11 +5,15 @@ export class Day0 extends Day {
     super('Day0');
   }
 
-  public async solvePartOne(input: string): Output {
+  private parseInput(input: string): string {
     return input;
   }
 
+  public async solvePartOne(input: string): Output {
+    return this.parseInput(input);
+  }
+
   public async solvePartTwo(input: string): Output {
-    return input;
+    return this.parseInput(input);
   }
 }
