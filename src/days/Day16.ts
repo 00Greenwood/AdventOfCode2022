@@ -14,7 +14,7 @@ export class Day16 extends Day {
     super('Day16');
   }
 
-  private findShortestPath(valves: Valves, path: Valve[], start: Valve, end: Valve): number {
+  private findShortestPath(valves: Valves, path: Valve[], start: Valve, end: Valve, minimum: number): number {
     path.push(start);
 
     {
@@ -22,13 +22,13 @@ export class Day16 extends Day {
       if (distance) return distance;
     }
 
-    const distances: number[] = [];
     for (const entry of start.connectedTo) {
       const valve = valves.get(entry[0]);
-      if (!valve || path.includes(valve)) continue;
-      distances.push(this.findShortestPath(valves, [...path], valve, end) + entry[1]);
+      if (!valve || path.includes(valve) || entry[1] >= minimum) continue;
+      const distance = this.findShortestPath(valves, [...path], valve, end, minimum - entry[1]) + entry[1];
+      if (distance < minimum) minimum = distance;
     }
-    return Math.min(...distances);
+    return minimum;
   }
 
   private parseInput(input: string): Valves {
@@ -48,7 +48,7 @@ export class Day16 extends Day {
         if (start === end) return; // Same valve!
         if (start.connectedTo.has(name)) return; // Already connected!
 
-        const distance = this.findShortestPath(valves, [], start, end);
+        const distance = this.findShortestPath(valves, [], start, end, Infinity);
         start.connectedTo.set(end.name, distance);
         end.connectedTo.set(start.name, distance);
       });
@@ -69,24 +69,37 @@ export class Day16 extends Day {
     return valves;
   }
 
-  private findAndOpenValve(valves: Valves, openValves: OpenValves, timeLeft: number, start: Valve): number {
-    const releasedPressures: number[] = [];
-    for (const entry of start.connectedTo) {
-      const valve = valves.get(entry[0]);
-      if (!valve) throw new Error(`Unable to find valve! ${entry[0]}`);
-      // Skip open valves
-      if (openValves.has(valve)) continue;
-      const openValvesCopy = new Map(openValves.entries());
-      const timeLeftCopy = timeLeft - (entry[1] + 1);
-      // Run out of time!
-      if (timeLeftCopy < 0) continue;
-      openValvesCopy.set(valve, timeLeftCopy);
-      releasedPressures.push(this.findAndOpenValve(valves, openValvesCopy, timeLeftCopy, valve));
-    }
-    return (releasedPressures.length > 0 ? Math.max(...releasedPressures) : 0) + start.flowRate * timeLeft;
+  private getValue(valves: Valves, name: string): Valve {
+    const valve = valves.get(name);
+    if (!valve) throw new Error(`Unable to find '${name}'!`);
+    return valve;
   }
 
-  private powerSet(names: string[], maxSize: number) {
+  private findAndOpenValve(
+    valves: Valves,
+    openValves: OpenValves,
+    currentTime: number,
+    start: Valve,
+    excluded?: string[]
+  ): number {
+    const releasedPressures: number[] = [];
+    for (const entry of start.connectedTo) {
+      // Skip excluded valves!
+      if (excluded && excluded.includes(entry[0])) continue;
+      const valve = this.getValue(valves, entry[0]);
+      // Skip open valves!
+      if (openValves.has(valve)) continue;
+      const timeLeft = currentTime - (entry[1] + 1);
+      // Run out of time!
+      if (timeLeft <= 0) continue;
+      openValves.set(valve, timeLeft);
+      releasedPressures.push(this.findAndOpenValve(valves, openValves, timeLeft, valve, excluded));
+      openValves.delete(valve);
+    }
+    return (releasedPressures.length > 0 ? Math.max(...releasedPressures) : 0) + start.flowRate * currentTime;
+  }
+
+  private powerSet(names: string[], size: number) {
     const sets: string[][] = [];
     const { length } = names;
     const numberOfCombinations = 2 ** length;
@@ -97,63 +110,33 @@ export class Day16 extends Day {
           subSet.push(names[setElementIndex]);
         }
       }
-      if (subSet.length <= maxSize) sets.push(subSet);
+      if (subSet.length <= size) sets.push(subSet);
     }
     return sets;
   }
 
-  private copyValve({ name, flowRate, connectedTo }: Valve, exclude: string[]) {
-    const valve = { name, flowRate, connectedTo: new Map(connectedTo.entries()) };
-    exclude.forEach((key) => {
-      valve.connectedTo.delete(key);
-    });
-    return valve;
-  }
-
-  private createValveSet(valves: Valves, set: string[], oppositeSet: string[]): Valves {
-    const output = new Map<string, Valve>();
-    set.forEach((name) => {
-      const valve = valves.get(name);
-      if (!valve) throw new Error('Unable to find valve!');
-      const valveCopy = this.copyValve(valve, oppositeSet);
-      output.set(name, valveCopy);
-    });
-    return output;
-  }
-
   public async solvePartOne(input: string): Output {
     const valves = this.parseInput(input);
-
-    const start = valves.get('AA');
-    if (!start) throw new Error('Unable to find start!');
+    const start = this.getValue(valves, 'AA');
     const pressure = this.findAndOpenValve(valves, new Map<Valve, number>(), 30, start);
     return pressure;
   }
 
   public async solvePartTwo(input: string): Output {
     const valves = this.parseInput(input);
-
-    const start = valves.get('AA');
-    if (!start) throw new Error('Unable to find start!');
+    const start = this.getValue(valves, 'AA');
 
     const names = [...start.connectedTo.keys()];
     const sets = this.powerSet(names, Math.floor(names.length / 2));
 
-    const pressures: number[] = [];
-
+    let maxPressure = 0;
     for (const set of sets) {
       const oppositeSet = names.filter((name) => !set.includes(name));
-
-      const setOne = this.createValveSet(valves, set, oppositeSet);
-      const setOneStart = this.copyValve(start, oppositeSet);
-      const first = this.findAndOpenValve(setOne, new Map<Valve, number>(), 26, setOneStart);
-
-      const setTwo = this.createValveSet(valves, oppositeSet, set);
-      const setTwoStart = this.copyValve(start, set);
-      const second = this.findAndOpenValve(setTwo, new Map<Valve, number>(), 26, setTwoStart);
-
-      pressures.push(first + second);
+      const first = this.findAndOpenValve(valves, new Map<Valve, number>(), 26, start, oppositeSet);
+      const second = this.findAndOpenValve(valves, new Map<Valve, number>(), 26, start, set);
+      if (first + second <= maxPressure) continue;
+      maxPressure = first + second;
     }
-    return Math.max(...pressures);
+    return maxPressure;
   }
 }

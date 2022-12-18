@@ -1,5 +1,7 @@
 import { Day, Output } from '../Day';
 import { Beacon } from '../interfaces/Beacon';
+import { Box } from '../interfaces/Box';
+import { Position } from '../interfaces/Position';
 import { Sensor } from '../interfaces/Sensors';
 import { calculateDistance } from '../utilities/calculateDistance';
 
@@ -60,6 +62,83 @@ export class Day15 extends Day {
     return Math.max(...rights);
   }
 
+  private contains(sensors: Sensor[], { lowerLeft, lowerRight, upperLeft, upperRight }: Box): boolean {
+    for (const sensor of sensors) {
+      if (
+        calculateDistance(sensor, lowerLeft) <= sensor.distance &&
+        calculateDistance(sensor, lowerRight) <= sensor.distance &&
+        calculateDistance(sensor, upperLeft) <= sensor.distance &&
+        calculateDistance(sensor, upperRight) <= sensor.distance
+      )
+        return true;
+    }
+    return false;
+  }
+
+  private splitBox({ lowerLeft, lowerRight, upperLeft, upperRight }: Box): {
+    lowerLeftBox: Box;
+    lowerRightBox: Box;
+    upperLeftBox: Box;
+    upperRightBox: Box;
+  } {
+    const lowerX = lowerLeft.x + Math.floor((upperRight.x - lowerLeft.x) / 2);
+    const lowerY = lowerLeft.y + Math.floor((upperRight.y - lowerLeft.y) / 2);
+
+    const upperX = lowerX + (upperRight.x === lowerLeft.x ? 0 : 1);
+    const upperY = lowerY + (upperRight.y === lowerLeft.y ? 0 : 1);
+
+    return {
+      lowerLeftBox: {
+        lowerLeft,
+        lowerRight: { x: lowerX, y: lowerRight.y },
+        upperLeft: { x: upperLeft.x, y: lowerY },
+        upperRight: { x: lowerX, y: lowerY },
+      },
+      lowerRightBox: {
+        lowerLeft: { x: upperX, y: lowerLeft.y },
+        lowerRight,
+        upperLeft: { x: upperX, y: lowerY },
+        upperRight: { x: upperRight.x, y: lowerY },
+      },
+      upperLeftBox: {
+        lowerLeft: { x: lowerLeft.x, y: upperY },
+        lowerRight: { x: lowerX, y: upperY },
+        upperLeft,
+        upperRight: { x: lowerX, y: upperRight.y },
+      },
+      upperRightBox: {
+        lowerLeft: { x: upperX, y: upperY },
+        lowerRight: { x: lowerRight.x, y: upperY },
+        upperLeft: { x: upperX, y: upperLeft.y },
+        upperRight,
+      },
+    };
+  }
+
+  private isBoxAPoint({ lowerLeft, upperRight }: Box): boolean {
+    return lowerLeft.x === upperRight.x && lowerLeft.y === upperRight.y;
+  }
+
+  private findBeacon(sensors: Sensor[], box: Box): Position {
+    const boxesToCheck: Box[] = [box];
+    let boxToCheck = boxesToCheck.pop();
+    while (boxToCheck) {
+      if (!this.contains(sensors, boxToCheck)) {
+        if (this.isBoxAPoint(boxToCheck)) {
+          return boxToCheck.lowerLeft;
+        }
+        const { lowerLeftBox, lowerRightBox, upperLeftBox, upperRightBox } = this.splitBox(boxToCheck);
+        boxesToCheck.push(lowerLeftBox);
+        boxesToCheck.push(lowerRightBox);
+        boxesToCheck.push(upperLeftBox);
+        boxesToCheck.push(upperRightBox);
+      }
+      boxToCheck = boxesToCheck.pop();
+    }
+
+    throw new Error('Unable to find Beacon!');
+  }
+
   public async solvePartOne(input: string): Output {
     const { sensors, beacons } = this.parseInput(input);
 
@@ -95,18 +174,15 @@ export class Day15 extends Day {
       throw new Error('X and Y should be defined!');
     }
 
-    for (let x = this.x; x >= 0; x--) {
-      for (let y = 0; y <= this.y; y++) {
-        const sensor = sensors.find((sensor) => calculateDistance(sensor, { x, y }) <= sensor.distance);
-        if (!sensor) {
-          return 4000000 * x + y;
-        }
-        // Skip forward the rest of the values in the sensor.
-        const skip = sensor.y - y + sensor.distance - Math.abs(sensor.x - x);
-        y += skip;
-      }
-    }
+    const box: Box = {
+      lowerLeft: { x: 0, y: 0 },
+      lowerRight: { x: this.x, y: 0 },
+      upperLeft: { x: 0, y: this.y },
+      upperRight: { x: this.x, y: this.y },
+    };
 
-    throw new Error('Unable to find Beacon!');
+    const { x, y } = this.findBeacon(sensors, box);
+
+    return x * 4000000 + y;
   }
 }
