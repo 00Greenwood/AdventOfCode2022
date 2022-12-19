@@ -58,7 +58,7 @@ export class Day11 extends Day {
     return inspections;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const monkeys = this.parseInput(input);
     const worryLevelReducer = (monkey: Monkey, value: number) => Math.floor(monkey.operation(value) / 3);
 
@@ -67,7 +67,7 @@ export class Day11 extends Day {
     return sorted[0] * sorted[1];
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const monkeys = this.parseInput(input);
 
     const lcm = monkeys.reduce((total, monkey) => total * monkey.testNumber, 1);

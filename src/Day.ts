@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path = require('path');
 
-export type Output = Promise<string | number>;
+export type Output = string | number;
 
 export abstract class Day {
   public readonly name: string;

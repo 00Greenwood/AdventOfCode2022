@@ -49,7 +49,7 @@ export class Day13 extends Day {
     return 'CONTINUE';
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const pairs = this.parseInput(input);
     return pairs.reduce(
       (total, { first, second }, index) => (this.compare(first, second) === 'CORRECT' ? total + index + 1 : total),
@@ -57,7 +57,7 @@ export class Day13 extends Day {
     );
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const pairs = this.parseInput(input);
     let list = new Array<List>();
     pairs.forEach(({ first, second }) => {

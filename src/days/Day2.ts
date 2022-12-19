@@ -151,13 +151,13 @@ export class Day2 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const games = this.parseInput(input, true);
     const score = games.reduce((score, game) => score + game.response + game.result, 0);
     return score;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const games = this.parseInput(input, false);
     const score = games.reduce((score, game) => score + game.response + game.result, 0);
     return score;

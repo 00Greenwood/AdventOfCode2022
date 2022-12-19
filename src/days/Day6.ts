@@ -16,7 +16,7 @@ export class Day6 extends Day {
     return false;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     for (let i = 4; i < input.length; i++) {
       const section = input.slice(i - 4, i);
       if (!this.containsDuplicates(section)) {
@@ -26,7 +26,7 @@ export class Day6 extends Day {
     return -1;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     for (let i = 14; i < input.length; i++) {
       const section = input.slice(i - 14, i);
       if (!this.containsDuplicates(section)) {

@@ -31,7 +31,7 @@ export class Day4 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const pairs = this.parseInput(input);
     const overlapping = pairs.filter(
       ({ first, second }) =>
@@ -41,7 +41,7 @@ export class Day4 extends Day {
     return overlapping.length;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const pairs = this.parseInput(input);
     const seperate = pairs.filter(({ first, second }) => first.lower > second.upper || second.lower > first.upper);
     return pairs.length - seperate.length;

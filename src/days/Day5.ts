@@ -49,7 +49,7 @@ export class Day5 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const { stacks, instructions } = this.parseInput(input);
     instructions.forEach(({ quantity, from, to }) => {
       for (let i = 0; i < quantity; i++) {
@@ -62,7 +62,7 @@ export class Day5 extends Day {
     return stacks.reduce((result, stack) => result + stack[stack.length - 1], '');
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const { stacks, instructions } = this.parseInput(input);
     instructions.forEach(({ quantity, from, to }) => {
       const craneStack: Stack = [];

@@ -9,11 +9,11 @@ export class Day0 extends Day {
     return input;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     return this.parseInput(input);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     return this.parseInput(input);
   }
 }

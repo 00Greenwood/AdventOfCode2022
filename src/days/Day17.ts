@@ -177,11 +177,11 @@ export class Day17 extends Day {
     return numberOfRepeats * patternHeight + heights[start - 1];
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     return this.solve(input, 2022);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     return this.solve(input, 1000000000000);
   }
 }

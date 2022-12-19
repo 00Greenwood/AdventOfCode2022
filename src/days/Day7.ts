@@ -89,13 +89,13 @@ export class Day7 extends Day {
     return folders;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const root = this.parseInput(input);
     const folders = this.getSmallFolders(root, 100000);
     return folders.reduce((total, folder) => total + folder.size, 0);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const root = this.parseInput(input);
     const totalSize = 70000000;
     const requiredFree = 30000000;

@@ -115,14 +115,14 @@ export class Day16 extends Day {
     return sets;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const valves = this.parseInput(input);
     const start = this.getValue(valves, 'AA');
     const pressure = this.findAndOpenValve(valves, new Map<Valve, number>(), 30, start);
     return pressure;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const valves = this.parseInput(input);
     const start = this.getValue(valves, 'AA');
 

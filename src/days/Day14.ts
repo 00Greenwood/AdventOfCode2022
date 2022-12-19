@@ -115,7 +115,7 @@ export class Day14 extends Day {
     );
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const grid = this.parseInput(input);
     const bottom = this.findLowestFloor(grid);
 
@@ -134,7 +134,7 @@ export class Day14 extends Day {
     return this.countSand(grid);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const grid = this.parseInput(input);
     const bottom = this.findLowestFloor(grid);
 

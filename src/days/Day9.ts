@@ -98,7 +98,7 @@ export class Day9 extends Day {
     }
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     this.reset(2);
     const motions = this.parseInput(input);
     motions.forEach((motion) => {
@@ -107,7 +107,7 @@ export class Day9 extends Day {
     return this.positions.size;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     this.reset(10);
     const motions = this.parseInput(input);
     motions.forEach((motion) => {

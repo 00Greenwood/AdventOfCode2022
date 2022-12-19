@@ -36,7 +36,7 @@ export class Day3 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const rucksacks = this.parseInput(input);
     const result = rucksacks.map(({ first, second }) => {
       return first.filter((value) => second.includes(value))[0];
@@ -44,7 +44,7 @@ export class Day3 extends Day {
     return result.reduce((score, value) => score + value, 0);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const rucksacks = this.parseInput(input);
     const result = new Array<number>();
     for (let index = 0; index < rucksacks.length; index += 3) {

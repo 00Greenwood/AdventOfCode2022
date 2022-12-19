@@ -91,7 +91,7 @@ export class Day12 extends Day {
     }
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const grid = this.parseInput(input);
     const start = this.findStart(grid);
     const end = this.findEnd(grid);
@@ -104,7 +104,7 @@ export class Day12 extends Day {
     return end.value;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const grid = this.parseInput(input);
     const start = this.findStart(grid);
     start.height = 1;

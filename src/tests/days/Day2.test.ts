@@ -7,13 +7,13 @@ describe('Day 2', () => {
     expect(day.name).toBe('Day2');
   });
 
-  test('Part 1', async () => {
-    expect(await day.solvePartOne(day.testInput)).toBe(15);
-    expect(await day.solvePartOne(day.input)).toBe(11386);
+  test('Part 1', () => {
+    expect(day.solvePartOne(day.testInput)).toBe(15);
+    expect(day.solvePartOne(day.input)).toBe(11386);
   });
 
-  test('Part 2', async () => {
-    expect(await day.solvePartTwo(day.testInput)).toBe(12);
-    expect(await day.solvePartTwo(day.input)).toBe(13600);
+  test('Part 2', () => {
+    expect(day.solvePartTwo(day.testInput)).toBe(12);
+    expect(day.solvePartTwo(day.input)).toBe(13600);
   });
 });

@@ -78,7 +78,7 @@ export class Day8 extends Day {
     );
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     this.trees = this.parseInput(input);
     this.width = this.trees.length;
     this.height = this.trees[0].length;
@@ -94,7 +94,7 @@ export class Day8 extends Day {
     return count;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     this.trees = this.parseInput(input);
     this.width = this.trees.length;
     this.height = this.trees[0].length;

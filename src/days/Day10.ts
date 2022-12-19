@@ -20,7 +20,7 @@ export class Day10 extends Day {
     });
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const instructions = this.parseInput(input);
     const cycles = [1];
     instructions.forEach(({ code, value }) => {
@@ -53,7 +53,7 @@ export class Day10 extends Day {
     return (crtPosition + 1) % 40;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const instructions = this.parseInput(input);
     let spritePosition = 1;
     let crtPosition = 0;

@@ -139,7 +139,7 @@ export class Day15 extends Day {
     throw new Error('Unable to find Beacon!');
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const { sensors, beacons } = this.parseInput(input);
 
     if (!this.y) {
@@ -167,7 +167,7 @@ export class Day15 extends Day {
     return count;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const { sensors } = this.parseInput(input);
 
     if (!this.x || !this.y) {

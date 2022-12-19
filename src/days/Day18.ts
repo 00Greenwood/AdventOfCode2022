@@ -93,12 +93,12 @@ export class Day18 extends Day {
     return connected;
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const lava = this.parseInput(input);
     return this.countSides(lava);
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const lava = this.parseInput(input);
     const minimum = this.findMinimum(lava);
     const maximum = this.findMaximum(lava);

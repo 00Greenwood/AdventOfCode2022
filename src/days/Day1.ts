@@ -10,13 +10,13 @@ export class Day1 extends Day {
     return elves.map((elf) => elf.split('\n').reduce((total, calories) => total + parseInt(calories), 0));
   }
 
-  public async solvePartOne(input: string): Output {
+  public solvePartOne(input: string): Output {
     const totalCalories = this.countCalories(input);
     const maximum = Math.max(...totalCalories);
     return maximum;
   }
 
-  public async solvePartTwo(input: string): Output {
+  public solvePartTwo(input: string): Output {
     const totalCalories = this.countCalories(input);
     let topThree = 0;
     for (let i = 0; i < 3; i++) {
