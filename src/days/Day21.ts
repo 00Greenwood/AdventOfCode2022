@@ -1,4 +1,3 @@
-import path from 'path';
 import { Day, Output } from '../Day';
 
 type Operation = (left: number, right: number) => number;
