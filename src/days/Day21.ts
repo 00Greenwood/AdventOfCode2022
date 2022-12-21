@@ -168,14 +168,14 @@ export class Day21 extends Day {
 
       if (monkey.operation === add) {
         expectedValue = subtract(expectedValue, monkeyNotOnPath.getValue());
-      } else if (!calculateRight && monkey.operation === subtract) {
-        expectedValue = subtract(monkeyNotOnPath.getValue(), expectedValue);
-      } else if (calculateRight && monkey.operation === subtract) {
-        expectedValue = add(expectedValue, monkeyNotOnPath.getValue());
-      } else if (!calculateRight && monkey.operation === divide) {
-        expectedValue = divide(monkeyNotOnPath.getValue(), expectedValue);
-      } else if (calculateRight && monkey.operation === divide) {
-        expectedValue = multiply(expectedValue, monkeyNotOnPath.getValue());
+      } else if (monkey.operation === subtract) {
+        expectedValue = calculateRight
+          ? add(expectedValue, monkeyNotOnPath.getValue())
+          : subtract(monkeyNotOnPath.getValue(), expectedValue);
+      } else if (monkey.operation === divide) {
+        expectedValue = calculateRight
+          ? multiply(expectedValue, monkeyNotOnPath.getValue())
+          : divide(monkeyNotOnPath.getValue(), expectedValue);
       } else if (monkey.operation === multiply) {
         expectedValue = divide(expectedValue, monkeyNotOnPath.getValue());
       }
