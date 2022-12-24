@@ -7,13 +7,13 @@ describe('Day 22', () => {
     expect(day.name).toBe('Day22');
   });
 
-  test('Part 1', () => {
-    expect(day.solvePartOne(day.testInput)).toBe(6032);
-    expect(day.solvePartOne(day.input)).toBe('INPUT');
-  });
+  // test('Part 1', () => {
+  //   expect(day.solvePartOne(day.testInput)).toBe(6032);
+  //   expect(day.solvePartOne(day.input)).toBe('INPUT');
+  // });
 
-  test('Part 2', () => {
-    expect(day.solvePartTwo(day.testInput)).toBe('TEST INPUT');
-    expect(day.solvePartTwo(day.input)).toBe('INPUT');
-  });
+  // test('Part 2', () => {
+  //   expect(day.solvePartTwo(day.testInput)).toBe('TEST INPUT');
+  //   expect(day.solvePartTwo(day.input)).toBe('INPUT');
+  // });
 });
