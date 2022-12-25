@@ -1,5 +1,8 @@
 import { Day, Output } from '../Day';
 
+type Build = 'WAIT' | 'ORE' | 'CLAY' | 'OBSIDIAN' | 'GEODE';
+type BuildQueue = Build[];
+
 interface OreRobot {
   ore: number;
 }
@@ -24,9 +27,6 @@ interface Blueprint {
   clayRobot: ClayRobot;
   obsidianRobot: ObsidianRobot;
   geodeRobot: GeodeRobot;
-  maxOreRobot: number;
-  maxClayRobot: number;
-  maxObsidianRobot: number;
 }
 
 interface Resources {
@@ -37,6 +37,80 @@ interface Resources {
 }
 
 type Robots = Resources;
+
+const increaseResources = (resources: Resources, robots: Robots) => {
+  resources.ore += robots.ore;
+  resources.clay += robots.clay;
+  resources.obsidian += robots.obsidian;
+  resources.geode += robots.geode;
+};
+
+const buildOreRobot = (resources: Resources, robots: Robots, { oreRobot }: Blueprint) => {
+  robots.ore += 1;
+  resources.ore -= oreRobot.ore;
+};
+
+const buildClayRobot = (resources: Resources, robots: Robots, { clayRobot }: Blueprint) => {
+  robots.clay += 1;
+  resources.ore -= clayRobot.ore;
+};
+
+const buildObsidianRobot = (resources: Resources, robots: Robots, { obsidianRobot }: Blueprint) => {
+  robots.obsidian += 1;
+  resources.ore -= obsidianRobot.ore;
+  resources.clay -= obsidianRobot.clay;
+};
+
+const buildGeodeRobot = (resources: Resources, robots: Robots, { geodeRobot }: Blueprint) => {
+  robots.geode += 1;
+  resources.ore -= geodeRobot.ore;
+  resources.obsidian -= geodeRobot.obsidian;
+};
+
+const calculateResources = (buildQueue: BuildQueue, blueprint: Blueprint): Resources => {
+  const resources: Resources = { ore: 0, clay: 0, obsidian: 0, geode: 0 };
+  const robots: Robots = { ore: 1, clay: 0, obsidian: 0, geode: 0 };
+
+  for (const build of buildQueue) {
+    switch (build) {
+      case 'WAIT':
+        increaseResources(resources, robots);
+        break;
+      case 'ORE':
+        increaseResources(resources, robots);
+        buildOreRobot(resources, robots, blueprint);
+        break;
+      case 'CLAY':
+        increaseResources(resources, robots);
+        buildClayRobot(resources, robots, blueprint);
+        break;
+      case 'OBSIDIAN':
+        increaseResources(resources, robots);
+        buildObsidianRobot(resources, robots, blueprint);
+        break;
+      case 'GEODE':
+        increaseResources(resources, robots);
+        buildGeodeRobot(resources, robots, blueprint);
+        break;
+    }
+  }
+  return resources;
+};
+
+const generateBuildQueue = (blueprint: Blueprint, size: number) => {
+  const buildQueue: BuildQueue = [];
+
+  const maxOreRobots = Math.max(
+    blueprint.oreRobot.ore,
+    blueprint.clayRobot.ore,
+    blueprint.obsidianRobot.ore,
+    blueprint.geodeRobot.ore
+  );
+  const maxClayRobots = blueprint.obsidianRobot.clay;
+  const maxObsidianRobots = blueprint.geodeRobot.obsidian;
+
+  const resources = calculateResources(buildQueue, blueprint);
+};
 
 export class Day19 extends Day {
   public constructor() {
@@ -58,154 +132,16 @@ export class Day19 extends Day {
         clayRobot,
         obsidianRobot,
         geodeRobot,
-        maxOreRobot: Math.max(oreRobot.ore, clayRobot.ore, obsidianRobot.ore, geodeRobot.ore),
-        maxClayRobot: obsidianRobot.clay,
-        maxObsidianRobot: geodeRobot.obsidian,
       };
     });
-  }
-
-  private buildOreRobot(resources: Resources, robots: Robots, { maxOreRobot, oreRobot }: Blueprint): boolean {
-    if (robots.ore >= maxOreRobot) return false;
-    if (resources.ore < oreRobot.ore) return false;
-    this.increaseResources(resources, robots);
-    robots.ore += 1;
-    resources.ore -= oreRobot.ore;
-    return true;
-  }
-
-  private unbuildOreRobot(resources: Resources, robots: Robots, { oreRobot }: Blueprint) {
-    robots.ore -= 1;
-    resources.ore += oreRobot.ore;
-    this.decreaseResources(resources, robots);
-  }
-
-  private buildClayRobot(resources: Resources, robots: Robots, { clayRobot, maxClayRobot }: Blueprint): boolean {
-    if (robots.clay >= maxClayRobot) return false;
-    if (resources.ore < clayRobot.ore) return false;
-    this.increaseResources(resources, robots);
-    robots.clay += 1;
-    resources.ore -= clayRobot.ore;
-    return true;
-  }
-
-  private unbuildClayRobot(resources: Resources, robots: Robots, { clayRobot }: Blueprint) {
-    robots.clay -= 1;
-    resources.ore += clayRobot.ore;
-    this.decreaseResources(resources, robots);
-  }
-
-  private buildObsidianRobot(
-    resources: Resources,
-    robots: Robots,
-    { obsidianRobot, maxObsidianRobot }: Blueprint
-  ): boolean {
-    if (robots.obsidian >= maxObsidianRobot) return false;
-    if (resources.ore < obsidianRobot.ore || resources.clay < obsidianRobot.clay) return false;
-    this.increaseResources(resources, robots);
-    robots.obsidian += 1;
-    resources.ore -= obsidianRobot.ore;
-    resources.clay -= obsidianRobot.clay;
-    return true;
-  }
-
-  private unbuildObsidianRobot(resources: Resources, robots: Robots, { obsidianRobot }: Blueprint) {
-    robots.obsidian -= 1;
-    resources.ore += obsidianRobot.ore;
-    resources.clay += obsidianRobot.clay;
-    this.decreaseResources(resources, robots);
-  }
-
-  private buildGeodeRobot(resources: Resources, robots: Robots, { geodeRobot }: Blueprint): boolean {
-    if (resources.ore < geodeRobot.ore || resources.obsidian < geodeRobot.obsidian) return false;
-    this.increaseResources(resources, robots);
-    robots.geode += 1;
-    resources.ore -= geodeRobot.ore;
-    resources.obsidian -= geodeRobot.obsidian;
-    return true;
-  }
-
-  private unbuildGeodeRobot(resources: Resources, robots: Robots, { geodeRobot }: Blueprint) {
-    robots.geode -= 1;
-    resources.ore += geodeRobot.ore;
-    resources.obsidian += geodeRobot.obsidian;
-    this.decreaseResources(resources, robots);
-  }
-
-  private increaseResources(resources: Resources, robots: Robots) {
-    resources.ore += robots.ore;
-    resources.clay += robots.clay;
-    resources.obsidian += robots.obsidian;
-    resources.geode += robots.geode;
-  }
-
-  private decreaseResources(resources: Resources, robots: Robots) {
-    resources.ore -= robots.ore;
-    resources.clay -= robots.clay;
-    resources.obsidian -= robots.obsidian;
-    resources.geode -= robots.geode;
-  }
-
-  private runSimulation(
-    time: number,
-    resources: Resources,
-    robots: Robots,
-    blueprint: Blueprint,
-    maxGeode: number
-  ): number {
-    time -= 1;
-
-    if (time <= 0) {
-      return resources.geode + robots.geode;
-    }
-
-    const possibleNumberOfGeodes = resources.geode + robots.geode * (time + 1) + (time / 2) * (2 * robots.geode + time);
-    if (maxGeode > possibleNumberOfGeodes) return maxGeode;
-
-    if (this.buildOreRobot(resources, robots, blueprint)) {
-      const geode = this.runSimulation(time, resources, robots, blueprint, maxGeode);
-      if (geode > maxGeode) maxGeode = geode;
-      this.unbuildOreRobot(resources, robots, blueprint);
-    }
-
-    if (this.buildGeodeRobot(resources, robots, blueprint)) {
-      const geode = this.runSimulation(time, resources, robots, blueprint, maxGeode);
-      if (geode > maxGeode) maxGeode = geode;
-      this.unbuildGeodeRobot(resources, robots, blueprint);
-    }
-
-    if (this.buildClayRobot(resources, robots, blueprint)) {
-      const geode = this.runSimulation(time, resources, robots, blueprint, maxGeode);
-      if (geode > maxGeode) maxGeode = geode;
-      this.unbuildClayRobot(resources, robots, blueprint);
-    }
-
-    if (this.buildObsidianRobot(resources, robots, blueprint)) {
-      const geode = this.runSimulation(time, resources, robots, blueprint, maxGeode);
-      if (geode > maxGeode) maxGeode = geode;
-      this.unbuildObsidianRobot(resources, robots, blueprint);
-    }
-
-    this.increaseResources(resources, robots);
-    const geode = this.runSimulation(time, resources, robots, blueprint, maxGeode);
-    if (geode > maxGeode) maxGeode = geode;
-    this.decreaseResources(resources, robots);
-
-    return maxGeode;
   }
 
   public solvePartOne(input: string): Output {
     const blueprints = this.parseInput(input);
 
-    const resources: Resources = { ore: 0, clay: 0, obsidian: 0, geode: 0 };
-    const robots: Robots = { ore: 1, clay: 0, obsidian: 0, geode: 0 };
+    generateBuildQueue(blueprints[0], 24);
 
-    let result = 0;
-    for (const blueprint of blueprints) {
-      const geodes = this.runSimulation(24, resources, robots, blueprint, 0);
-      result += blueprint.id * geodes;
-    }
-    return result;
+    return 0;
   }
 
   public solvePartTwo(input: string): Output {
