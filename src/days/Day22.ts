@@ -186,13 +186,52 @@ export class Day22 extends Day {
   }
 
   public solvePartTwo(input: string): Output {
-    // const { board, instructions } = this.parseInput(input);
-    // const row = getRow(board, 1);
-    // const position: Position = { y: 1, x: Math.min(...row.keys()), direction: Direction.RIGHT };
-    // for (const instruction of instructions) {
-    //   followInstruction(position, instruction, board, true /*= isCube*/);
-    // }
-    // return 1000 * position.y + 4 * position.x + position.direction;
-    return 0;
+    const { tiles, instructions } = this.parseInput(input);
+
+    const partTwoTransformer: OutOfBoundsTransformer = (position: Location) => {
+      switch (position.direction) {
+        case Direction.RIGHT: {
+          const row = tiles.get(position.y);
+          if (!row) throw new Error('Unable to find Row!');
+          position.x = Math.min(...row.keys());
+          break;
+        }
+        case Direction.DOWN: {
+          const yValues = [...tiles.keys()].filter((key) => {
+            const row = tiles.get(key);
+            if (!row) throw new Error('Unable to find Row!');
+            return row.has(position.x);
+          });
+          position.y = Math.min(...yValues);
+          break;
+        }
+        case Direction.LEFT: {
+          const row = tiles.get(position.y);
+          if (!row) throw new Error('Unable to find Row!');
+          position.x = Math.max(...row.keys());
+          break;
+        }
+
+        case Direction.UP: {
+          const yValues = [...tiles.keys()].filter((key) => {
+            const row = tiles.get(key);
+            if (!row) throw new Error('Unable to find Row!');
+            return row.has(position.x);
+          });
+          position.y = Math.max(...yValues);
+          break;
+        }
+      }
+    };
+
+    const startRow = tiles.get(1);
+    if (!startRow) throw new Error('Unable to find Row!');
+    const x = Math.min(...startRow.keys());
+
+    const position: Location = { x, y: 1, direction: Direction.RIGHT };
+    for (const instruction of instructions) {
+      followInstruction(tiles, position, instruction, partTwoTransformer);
+    }
+    return 1000 * position.y + 4 * position.x + position.direction;
   }
 }
