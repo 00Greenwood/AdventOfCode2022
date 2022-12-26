@@ -1,17 +1,5 @@
 import { Day, Output } from '../Day';
-
-//type Face = 'RIGHT' | 'LEFT' | 'UP' | 'DOWN' | 'FRONT' | 'BACK';
-
-type Solid = boolean;
-
-interface Face {
-  x: number;
-  y: number;
-  tiles: Map<number, Map<number, Solid>>;
-  neighbors: Map<Direction, Face>;
-}
-
-type Faces = Map<number, Map<number, Face>>;
+import { Position } from '../interfaces/Position';
 
 enum Direction {
   'RIGHT' = 0,
@@ -20,22 +8,47 @@ enum Direction {
   'UP' = 3,
 }
 
-interface Position {
-  x: number;
-  y: number;
-  face: Face;
+const directionMap: Record<Direction, (position: Location) => Location> = {
+  0: ({ x, y, direction }: Location) => ({ x: x + 1, y, direction }),
+  1: ({ x, y, direction }: Location) => ({ x, y: y + 1, direction }),
+  2: ({ x, y, direction }: Location) => ({ x: x - 1, y, direction }),
+  3: ({ x, y, direction }: Location) => ({ x, y: y - 1, direction }),
+};
+
+type Tile = 'SOLID' | 'AIR';
+type Tiles = Map<number, Map<number, Tile>>;
+
+interface Location extends Position {
   direction: Direction;
 }
 
 type Turn = 'L' | 'R';
 type Instruction = number | Turn;
 
-const move = (position: Position, distance: number) => {
+type OutOfBoundsTransformer = (position: Location) => void;
+
+const move = (tiles: Tiles, location: Location, distance: number, transformer: OutOfBoundsTransformer) => {
   for (let i = 0; i < distance; i++) {
-    const nextTile = position.tile.neighbors.get(position.direction);
-    if (!nextTile) throw new Error('Unable to find next Tile!');
-    if (nextTile.isSolid) break;
-    position.tile = nextTile;
+    const nextPosition = directionMap[location.direction](location);
+
+    let nextRow = tiles.get(nextPosition.y);
+    if (nextRow === undefined || !nextRow.has(nextPosition.x)) {
+      // Next position is out-of-bound, wrap!
+      transformer(nextPosition);
+      nextRow = tiles.get(nextPosition.y);
+    }
+
+    if (!nextRow) {
+      throw new Error('Unable to find next Row');
+    }
+
+    if (nextRow.get(nextPosition.x) === 'SOLID') {
+      // Next position is solid!
+      break;
+    }
+
+    location.x = nextPosition.x;
+    location.y = nextPosition.y;
   }
 };
 
@@ -65,15 +78,20 @@ const turnCounterClockwise = (direction: Direction): Direction => {
   }
 };
 
-const turn = (position: Position, turn: Turn) => {
-  position.direction = turn === 'R' ? turnClockwise(position.direction) : turnCounterClockwise(position.direction);
+const turn = (location: Location, turn: Turn) => {
+  location.direction = turn === 'R' ? turnClockwise(location.direction) : turnCounterClockwise(location.direction);
 };
 
-const followInstruction = (position: Position, instruction: Instruction) => {
+const followInstruction = (
+  tiles: Tiles,
+  location: Location,
+  instruction: Instruction,
+  transformer: OutOfBoundsTransformer
+) => {
   if (Number.isInteger(instruction)) {
-    move(position, instruction as number);
+    move(tiles, location, instruction as number, transformer);
   } else {
-    turn(position, instruction as Turn);
+    turn(location, instruction as Turn);
   }
 };
 
@@ -82,90 +100,25 @@ export class Day22 extends Day {
     super('Day22');
   }
 
-  private parseFaces(input: string, isCube?: boolean): Faces {
-    const faces: Faces = new Map();
-
-    const size = Math.sqrt([...input.matchAll(/(\.|#)/g)].length / 6);
-    const lines = input.split('\n');
-    const height = lines.length / size;
-    const width = Math.max(...lines.map((line) => line.length)) / size;
-
-    for (let i = 0; i < height; i++) {
-      const facesRow = new Map<number, Face>();
-      for (let j = 0; j < width; j++) {
-        const face: Face = {
-          x: j,
-          y: i,
-          tiles: new Map<number, Map<number, Solid>>(),
-          neighbors: new Map<Direction, Face>(),
-        };
-        for (let k = 0; k < size; k++) {
-          const y = i * size + k;
-          const row = new Map<number, Solid>();
-          for (let l = 0; l < size; l++) {
-            const x = j * size + l;
-            const char = lines[y].charAt(x);
-            if (char !== ' ' && char !== '') row.set(l, char === '#');
-          }
-          if (row.size > 0) face.tiles.set(k, row);
-        }
-        if (face.tiles.size > 0) facesRow.set(j, face);
-      }
-      if (facesRow.size > 0) faces.set(i, facesRow);
-    }
-
-    if (isCube) {
-      // link Cube!
-    }
-
-    for (let i = 0; i < height; i++) {
-      const row = faces.get(i);
-      if (!row) continue;
-
-      const farLeftIndex = Math.min(...row.keys());
-      const farRightIndex = Math.max(...row.keys());
-
-      for (let j = 0; j < width; j++) {
-        const entry = row.get(j);
-        if (!entry) continue;
-
-        const possibleRowsIndex = [...faces.keys()].filter((key) => faces.get(key)?.has(j));
-        const farUpIndex = Math.min(...possibleRowsIndex);
-        const farDownIndex = Math.max(...possibleRowsIndex);
-
-        if (!entry.neighbors.has(Direction.RIGHT)) {
-          const right = row.get(j + 1) ?? row.get(farLeftIndex);
-          if (!right) throw new Error('Unable to find Right!');
-          entry.neighbors.set(Direction.RIGHT, right);
-        }
-        if (!entry.neighbors.has(Direction.LEFT)) {
-          const left = row.get(j - 1) ?? row.get(farRightIndex);
-          if (!left) throw new Error('Unable to find Left!');
-          entry.neighbors.set(Direction.LEFT, left);
-        }
-        if (!entry.neighbors.has(Direction.DOWN)) {
-          const downRow = faces.get(i + 1) ?? faces.get(farUpIndex);
-          if (!downRow) throw new Error('Unable to find Down!');
-          const down = downRow.get(j);
-          if (!down) throw new Error('Unable to find Down!');
-          entry.neighbors.set(Direction.DOWN, down);
-        }
-        if (!entry.neighbors.has(Direction.UP)) {
-          const upRow = faces.get(i - 1) ?? faces.get(farDownIndex);
-          if (!upRow) throw new Error('Unable to find Up!');
-          const up = upRow.get(j);
-          if (!up) throw new Error('Unable to find Up!');
-          entry.neighbors.set(Direction.UP, up);
-        }
-      }
-    }
-
-    return faces;
-  }
-
-  private parseInput(input: string, isCube?: boolean): { startPosition: Position; instructions: Instruction[] } {
+  private parseInput(input: string): { tiles: Tiles; instructions: Instruction[] } {
     const sections = input.split('\n\n');
-    const faces = this.parseFaces(sections[0], isCube);
+
+    const tiles: Tiles = new Map();
+    sections[0].split('\n').forEach((line, y) => {
+      line.split('').forEach((char, x) => {
+        if (!tiles.has(y + 1)) tiles.set(y + 1, new Map());
+        switch (char) {
+          case ' ':
+            break;
+          case '.':
+            tiles.get(y + 1)?.set(x + 1, 'AIR');
+            break;
+          case '#':
+            tiles.get(y + 1)?.set(x + 1, 'SOLID');
+            break;
+        }
+      });
+    });
 
     const distanceMatches = [...sections[1].matchAll(/\d+/g)];
     const turnMatches = [...sections[1].matchAll(/(L|R)/g)];
@@ -174,22 +127,62 @@ export class Day22 extends Day {
       const distance = distanceMatches[i][0];
       instructions.push(parseInt(distance));
       const turn = turnMatches[i][0];
-      instructions.push(turn === 'L' ? 'L' : 'R');
+      instructions.push(turn as Turn);
     }
     const finalDistance = distanceMatches.at(-1)?.[0];
     if (finalDistance) instructions.push(parseInt(finalDistance));
 
-    return { startPosition: { x: 0, y: 0, face: null, direction: Direction.RIGHT }, instructions };
+    return { tiles, instructions };
   }
 
   public solvePartOne(input: string): Output {
-    const { startPosition, instructions } = this.parseInput(input);
-    // const position: Position = { tile: startTile, direction: Direction.RIGHT };
-    // for (const instruction of instructions) {
-    //   followInstruction(position, instruction);
-    // }
-    // return 1000 * position.tile.y + 4 * position.tile.x + position.direction;
-    return 0;
+    const { tiles, instructions } = this.parseInput(input);
+
+    const partOneTransformer: OutOfBoundsTransformer = (position: Location) => {
+      switch (position.direction) {
+        case Direction.RIGHT: {
+          const row = tiles.get(position.y);
+          if (!row) throw new Error('Unable to find Row!');
+          position.x = Math.min(...row.keys());
+          break;
+        }
+        case Direction.DOWN: {
+          const yValues = [...tiles.keys()].filter((key) => {
+            const row = tiles.get(key);
+            if (!row) throw new Error('Unable to find Row!');
+            return row.has(position.x);
+          });
+          position.y = Math.min(...yValues);
+          break;
+        }
+        case Direction.LEFT: {
+          const row = tiles.get(position.y);
+          if (!row) throw new Error('Unable to find Row!');
+          position.x = Math.max(...row.keys());
+          break;
+        }
+
+        case Direction.UP: {
+          const yValues = [...tiles.keys()].filter((key) => {
+            const row = tiles.get(key);
+            if (!row) throw new Error('Unable to find Row!');
+            return row.has(position.x);
+          });
+          position.y = Math.max(...yValues);
+          break;
+        }
+      }
+    };
+
+    const startRow = tiles.get(1);
+    if (!startRow) throw new Error('Unable to find Row!');
+    const x = Math.min(...startRow.keys());
+
+    const position: Location = { x, y: 1, direction: Direction.RIGHT };
+    for (const instruction of instructions) {
+      followInstruction(tiles, position, instruction, partOneTransformer);
+    }
+    return 1000 * position.y + 4 * position.x + position.direction;
   }
 
   public solvePartTwo(input: string): Output {
