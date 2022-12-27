@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { Day, Output } from '../Day';
 import { Position } from '../interfaces/Position';
 
