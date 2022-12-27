@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { Day, Output } from '../Day';
 import { Position } from '../interfaces/Position';
 
@@ -312,7 +313,7 @@ export class Day22 extends Day {
 
           // Face 2 to Face 4
           position.y = position.x + cubeSize;
-          position.x = 2 * cubeSize;
+          position.x = cubeSize + 1;
           position.direction = turnClockwise(position.direction);
           break;
       }
@@ -323,9 +324,11 @@ export class Day22 extends Day {
     const x = Math.min(...startRow.keys());
 
     const position: Location = { x, y: 1, direction: Direction.RIGHT };
+
     for (const instruction of instructions) {
       followInstruction(tiles, position, instruction, partTwoTransformer);
     }
+
     return 1000 * position.y + 4 * position.x + position.direction;
   }
 }

@@ -87,7 +87,7 @@ export class Day25 extends Day {
   }
 
   public solvePartTwo(input: string): Output {
-    const lines = this.parseInput(input);
-    return lines.reduce((total, line) => (total += convertSNAFU(line)), 0);
+    // START THE BLENDER!
+    return input;
   }
 }
