@@ -12,8 +12,8 @@ describe('Day 22', () => {
     expect(day.solvePartOne(day.input)).toBe(31568);
   });
 
-  // test('Part 2', () => {
-  //   expect(day.solvePartTwo(day.testInput)).toBe('TEST INPUT');
-  //   expect(day.solvePartTwo(day.input)).toBe('INPUT');
-  // });
+  test('Part 2', () => {
+    expect(day.solvePartTwo(day.testInput)).toBe(10006);
+    //expect(day.solvePartTwo(day.input)).toBe('INPUT');
+  });
 });
