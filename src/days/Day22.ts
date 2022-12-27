@@ -31,8 +31,6 @@ const move = (tiles: Tiles, location: Location, distance: number, transformer: O
   for (let i = 0; i < distance; i++) {
     const nextPosition = directionMap[location.direction](location);
 
-    const currentDirection = location.direction;
-
     let nextRow = tiles.get(nextPosition.y);
     if (nextRow === undefined || !nextRow.has(nextPosition.x)) {
       // Next position is out-of-bound, wrap!
