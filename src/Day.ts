@@ -1,45 +1,24 @@
-import {mkdir, readFile, writeFile} from 'fs/promises';
+import { readFileSync } from 'fs';
 import path = require('path');
 
-export type File = 'ONE' | 'TWO';
+export type Output = string | number;
 
 export abstract class Day {
-  readonly name: string;
+  public readonly name: string;
+  public readonly input: string;
+  public readonly testInput: string;
 
-  constructor(name: string) {
+  protected constructor(name: string) {
     this.name = name;
+    this.input = this.load(false /*= isTest*/);
+    this.testInput = this.load(true) /*= isTest*/;
   }
 
-  public async solve(): Promise<void> {
-    {
-      const input = await this.load('ONE');
-      const output = await this.solveOne(input);
-      await this.save('ONE', output);
-    }
-    {
-      const input = await this.load('TWO');
-      const output = await this.solveTwo(input);
-      await this.save('TWO', output);
-    }
+  // Load either the input or the test input.
+  private load(isTest: boolean): string {
+    return readFileSync(path.resolve(__dirname, '../inputs', `${this.name}${isTest ? '.test' : ''}.txt`), 'utf-8');
   }
 
-  private async load(file: File): Promise<string> {
-    return readFile(
-      path.resolve(__dirname, '../../input', this.name, file),
-      'utf-8'
-    );
-  }
-
-  private async save(file: File, output: string): Promise<void> {
-    const folder = path.resolve(__dirname, '../../output', this.name);
-    await mkdir(folder, {recursive: true});
-    return writeFile(
-      path.resolve(__dirname, '../../output', this.name, file),
-      output,
-      'utf-8'
-    );
-  }
-
-  abstract solveOne(input: string): Promise<string>;
-  abstract solveTwo(input: string): Promise<string>;
+  public abstract solvePartOne(input: string): Output;
+  public abstract solvePartTwo(input: string): Output;
 }

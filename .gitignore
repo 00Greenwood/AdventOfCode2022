@@ -1,6 +1,14 @@
-# Typescript bBuild Directory
+# VSCode Settings File
+.vscode
+
+# Typescript Build Directory
 .build
 
 # Node Package Directory
 node_modules
-package-lock.json
+
+# lint-staged
+.eslintcache
+
+# Advent of Code Input
+inputs
